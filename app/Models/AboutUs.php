@@ -1,4 +1,5 @@
 <?php
+// app/Models/AboutUs.php
 
 namespace App\Models;
 
@@ -8,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class AboutUs extends Model
 {
     use HasFactory;
+
     protected $table = 'about_us';
 
     protected $fillable = [
@@ -19,21 +21,11 @@ class AboutUs extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
-        'slug'
+        'slug',
     ];
 
     protected $casts = [
-        'profile_images' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
-
-    public function getMetaTitleAttribute($value)
-    {
-        return $value ?: 'Tentang Kami - ' . config('app.name');
-    }
-
-    public function getMetaDescriptionAttribute($value)
-    {
-        return $value ?: 'Pelajari lebih lanjut tentang perusahaan kami, visi, misi, dan komitmen dalam memberikan layanan terbaik.';
-    }
-
 }
