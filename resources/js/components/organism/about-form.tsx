@@ -11,7 +11,7 @@ import { SEOFields } from '@/components/molecules/seo-fields'
 import { toast } from 'sonner'
 import { Save, Loader2 } from 'lucide-react'
 import AboutUsController from '@/actions/App/Http/Controllers/Admin/ManagementContent/AboutController'
-import MediaUploadController from '@/actions/App/Http/Controllers/Admin/MediaController'
+import MediaUploadController from '@/actions/App/Http/Controllers/Admin/MediaUploadController'
 
 interface AboutUsData {
     id?: number

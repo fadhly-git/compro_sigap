@@ -37,6 +37,11 @@ const mainNavItems: NavItem[] = [
                 title: 'Layanan',
                 href: '/admin/management-content/services',
                 icon: FactoryIcon
+            },
+            {
+                title: 'Galeri',
+                href: '/admin/management-content/gallery',
+                icon: FactoryIcon
             }
         ]
     }
