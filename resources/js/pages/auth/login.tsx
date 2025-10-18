@@ -1,6 +1,6 @@
-import InputError from '@/components/input-error';
-import { InputPassword } from '@/components/input-password';
-import TextLink from '@/components/text-link';
+import InputError from '@/components/organism/input-error';
+import { InputPassword } from '@/components/organism/input-password';
+import TextLink from '@/components/organism/text-link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';

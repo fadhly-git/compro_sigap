@@ -1,6 +1,6 @@
-import { NavFooter } from '@/components/nav-footer';
-import { NavMain } from '@/components/nav-main';
-import { NavUser } from '@/components/nav-user';
+import { NavFooter } from '@/components/organism/nav-footer';
+import { NavMain } from '@/components/organism/nav-main';
+import { NavUser } from '@/components/organism/nav-user';
 import {
     Sidebar,
     SidebarContent,
@@ -10,10 +10,11 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard } from '@/routes/admin';
+import { index as about } from '@/routes/admin/management-content/about';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, SendIcon } from 'lucide-react';
+import { FactoryIcon, LayoutGrid, SendIcon } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -22,6 +23,18 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+    {
+        title: 'Manajemen Konten',
+        href: '#',
+        icon: LayoutGrid,
+        items: [
+            {
+                title: 'Tentang Kami',
+                href: about(),
+                icon: FactoryIcon
+            }
+        ]
+    }
 ];
 
 const footerNavItems: NavItem[] = [

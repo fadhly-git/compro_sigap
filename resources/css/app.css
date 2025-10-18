@@ -9,7 +9,7 @@
 
 @theme {
     --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Poppins', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
 
@@ -182,6 +182,28 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@media (prefers-color-scheme: dark) {
+    video::-webkit-media-controls-panel {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    video::-webkit-media-controls-play-button,
+    video::-webkit-media-controls-mute-button,
+    video::-webkit-media-controls-fullscreen-button {
+        filter: invert(1);
+    }
+}
+
+.dark video::-webkit-media-controls-panel {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.dark video::-webkit-media-controls-play-button,
+.dark video::-webkit-media-controls-mute-button,
+.dark video::-webkit-media-controls-fullscreen-button {
+    filter: invert(1);
 }
 
 /* Custom scrollbar styling */

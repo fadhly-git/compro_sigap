@@ -1,4 +1,4 @@
-import { Icon } from '@/components/icon';
+import { Icon } from '@/components/organism/icon';
 import {
     SidebarGroup,
     SidebarGroupContent,
