@@ -91,7 +91,7 @@ export default function ServicesIndex({ services }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Layanan | Admin" />
 
-            <div className="space-y-6 mx-auto max-w-6xl px-4 py-6">
+            <div className="space-y-6 mx-auto max-w-4xl px-4 py-6">
                 <HeadingSmall
                     title="Layanan"
                     description="Kelola layanan yang ditawarkan oleh perusahaan Anda"
