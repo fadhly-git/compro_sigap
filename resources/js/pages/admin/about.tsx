@@ -36,7 +36,7 @@ export default function About({ aboutUs }: Props) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Tentang Kami | Admin" />
 
-            <div className="space-y-6 mx-auto max-w-6xl py-4">
+            <div className="space-y-6 mx-auto max-w-6xl px-4 py-6">
                 <HeadingSmall
                     title="Tentang Kami"
                     description="Kelola informasi tentang perusahaan Anda"

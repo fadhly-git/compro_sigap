@@ -75,9 +75,11 @@ export function SEOFields({
                     value={slug}
                     onChange={(e) => onSlugChange(e.target.value)}
                     placeholder="tentang-kami"
+                    readOnly
+                    className="bg-muted cursor-not-allowed"
                 />
                 <p className="text-xs text-gray-500">
-                    URL akan menjadi: {import.meta.env.APP_URL}/{slug}
+                    Slug dibuat otomatis dari judul
                 </p>
             </div>
         </div>

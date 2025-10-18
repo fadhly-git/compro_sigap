@@ -1,7 +1,8 @@
 <?php
 
 
-use App\Http\Controllers\Admin\Management_Content\AboutController;
+use App\Http\Controllers\Admin\ManagementContent\AboutController;
+use App\Http\Controllers\Admin\ManagementContent\ServicesController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ServiceController;
 use Illuminate\Support\Facades\Route;
@@ -17,7 +18,14 @@ Route::middleware(['auth'])->group(function () {
             Route::get('about', [AboutController::class, 'index'])->name('admin.management-content.about.index');
             Route::post('about', [AboutController::class, 'update'])->name('admin.management-content.about.update');
 
-            Route::resource('services', ServiceController::class);
+            Route::get('services', [ServicesController::class, 'index'])->name('admin.management-content.services.index');
+            Route::get('services/create', [ServicesController::class, 'create'])->name('admin.management-content.services.create');
+            Route::post('services', [ServicesController::class, 'store'])->name('admin.management-content.services.store');
+            Route::get('services/{service}', [ServicesController::class, 'show'])->name('admin.management-content.services.show');
+            Route::get('services/{service}/edit', [ServicesController::class, 'edit'])->name('admin.management-content.services.edit');
+            Route::post('services/{service}', [ServicesController::class, 'update'])->name('admin.management-content.services.update.post');
+            Route::put('services/{service}', [ServicesController::class, 'update'])->name('admin.management-content.services.update');
+            Route::delete('services/{service}', [ServicesController::class, 'destroy'])->name('admin.management-content.services.destroy');
 
             Route::get('portofolio', function () {
                 return Inertia::render('');

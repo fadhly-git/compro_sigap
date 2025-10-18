@@ -32,6 +32,11 @@ const mainNavItems: NavItem[] = [
                 title: 'Tentang Kami',
                 href: about(),
                 icon: FactoryIcon
+            },
+            {
+                title: 'Layanan',
+                href: '/admin/management-content/services',
+                icon: FactoryIcon
             }
         ]
     }

@@ -59,8 +59,6 @@ interface RichTextEditorProps {
     onImageDelete?: (url: string) => void
 }
 
-// Global variable untuk callback
-let globalImageDeleteCallback: ((url: string) => void) | null = null
 let deletingImages = new Set<string>()
 let processedImages = new Set<string>()
 
@@ -231,49 +229,51 @@ export function RichTextEditor({ content, onChange, onImageDelete }: RichTextEdi
 
 
     // Listener untuk keyboard delete
-    useEffect(() => {
-        if (!editor) return
+useEffect(() => {
+  // Set global callback
+  globalThis.globalImageDeleteCallback = onImageDelete || null
 
-        const handleTransaction = (transaction: any) => {
-            // hanya proses jika ada perubahan pada dokumen
-            if (!transaction.docChanged) return;
-            // Cek apakah ada node image yang dihapus
-            const prevDoc = transaction.before
-            const newDoc = transaction.doc
+  if (!editor) return
 
-            prevDoc.descendants((node: any) => {
-                if (node.type.name === 'image') {
-                    const imageUrl = node.attrs.src
-                    // Cek apakah node ini ada di dokumen baru
-                    let stillExists = false
-                    newDoc.descendants((newNode: any) => {
-                        if (newNode.type.name === 'image' && newNode.attrs.src === imageUrl) {
-                            stillExists = true
-                        }
-                    })
-                    // Jika tidak ada di dokumen baru, panggil callback untuk hapus
-                    if (!stillExists && !processedImages.has(imageUrl)) {
-                        processedImages.add(imageUrl)
-                        // delay untuk memastikan callback tidak dipanggil berulang kali
-                        setTimeout(() => {
-                            const callback = globalImageDeleteCallback
-                            if (callback) callback(imageUrl);
-                            // Hapus dari set setelah callback dipanggil
-                            setTimeout(() => {
-                                processedImages.delete(imageUrl)
-                            }, 5000)
-                        }, 200)
-                    }
-                }
-            })
+  const handleTransaction = (transaction: any) => {
+    if (!transaction.docChanged) return;
+
+    const prevDoc = transaction.before
+    const newDoc = transaction.doc
+
+    prevDoc.descendants((node: any) => {
+      if (node.type.name === 'image') {
+        const imageUrl = node.attrs.src
+        let stillExists = false
+
+        newDoc.descendants((newNode: any) => {
+          if (newNode.type.name === 'image' && newNode.attrs.src === imageUrl) {
+            stillExists = true
+          }
+        })
+
+        if (!stillExists && !processedImages.has(imageUrl)) {
+          processedImages.add(imageUrl)
+          setTimeout(() => {
+            const callback = globalThis.globalImageDeleteCallback
+            if (callback) callback(imageUrl);
+            setTimeout(() => {
+              processedImages.delete(imageUrl)
+            }, 5000)
+          }, 200)
         }
+      }
+    })
+  }
 
-        editor.on('transaction', handleTransaction)
+  editor.on('transaction', handleTransaction)
 
-        return () => {
-            editor.off('transaction', handleTransaction)
-        }
-    }, [editor, onImageDelete])
+  return () => {
+    editor.off('transaction', handleTransaction)
+    // Clear callback when component unmounts
+    globalThis.globalImageDeleteCallback = null
+  }
+}, [editor, onImageDelete])
 
     const handleFileUpload = useCallback(async (file: File) => {
         if (!file) return
