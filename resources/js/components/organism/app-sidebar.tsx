@@ -42,6 +42,11 @@ const mainNavItems: NavItem[] = [
                 title: 'Galeri',
                 href: '/admin/management-content/gallery',
                 icon: FactoryIcon
+            },
+            {
+                title: 'Portofolio',
+                href: '/admin/management-content/portfolio',
+                icon: FactoryIcon
             }
         ]
     }
