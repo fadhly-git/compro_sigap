@@ -13,6 +13,7 @@ interface FormFieldProps {
     className?: string
     error?: string
     maxLength?: number
+    readonly?: boolean
 }
 
 export function FormField({
@@ -25,7 +26,8 @@ export function FormField({
     required = false,
     className = '',
     error,
-    maxLength
+    maxLength,
+    readonly = false
 }: FormFieldProps) {
     return (
         <div className={`space-y-2 ${className}`}>
@@ -61,6 +63,7 @@ export function FormField({
                     onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}
                     maxLength={maxLength}
+                    readOnly={readonly}
                 />
             )}
             {maxLength && (

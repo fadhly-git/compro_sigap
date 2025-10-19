@@ -45,17 +45,26 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/category/{category}/items/{item}', [\App\Http\Controllers\Admin\ManagementContent\GalleryController::class, 'destroyItem'])->name('admin.management-content.gallery.items.destroy');
             });
 
-                // Portfolio routes
-                Route::get('portfolio', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'index'])->name('admin.management-content.portfolio.index');
-                Route::get('portfolio/create', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'create'])->name('admin.management-content.portfolio.create');
-                Route::post('portfolio', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'store'])->name('admin.management-content.portfolio.store');
-                Route::get('portfolio/{portfolio}', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'show'])->name('admin.management-content.portfolio.show');
-                Route::get('portfolio/{portfolio}/edit', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'edit'])->name('admin.management-content.portfolio.edit');
-                Route::post('portfolio/{portfolio}', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'update'])->name('admin.management-content.portfolio.update.post');
-                Route::put('portfolio/{portfolio}', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'update'])->name('admin.management-content.portfolio.update');
-                Route::delete('portfolio/{portfolio}', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'destroy'])->name('admin.management-content.portfolio.destroy');
-                Route::post('portfolio/update-order', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'updateOrder'])->name('admin.management-content.portfolio.update-order');
+            // Portfolio routes
+            Route::get('portfolio', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'index'])->name('admin.management-content.portfolio.index');
+            Route::get('portfolio/create', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'create'])->name('admin.management-content.portfolio.create');
+            Route::post('portfolio', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'store'])->name('admin.management-content.portfolio.store');
+            Route::get('portfolio/{portfolio}', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'show'])->name('admin.management-content.portfolio.show');
+            Route::get('portfolio/{portfolio}/edit', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'edit'])->name('admin.management-content.portfolio.edit');
+            Route::post('portfolio/{portfolio}', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'update'])->name('admin.management-content.portfolio.update.post');
+            Route::put('portfolio/{portfolio}', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'update'])->name('admin.management-content.portfolio.update');
+            Route::delete('portfolio/{portfolio}', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'destroy'])->name('admin.management-content.portfolio.destroy');
+            Route::post('portfolio/update-order', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'updateOrder'])->name('admin.management-content.portfolio.update-order');
         });
+
+        // message routes
+            Route::prefix('message')->group(function () {
+                Route::get('/', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('admin.message.index');
+                Route::get('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'show'])->name('admin.message.show');
+                Route::post('/{message}/reply', [\App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('admin.message.reply');
+                Route::post('/{message}/mark-read', [\App\Http\Controllers\Admin\MessageController::class, 'markAsRead'])->name('admin.message.mark-read');
+                Route::delete('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'destroy'])->name('admin.message.destroy');
+            });
 
         Route::prefix('media')->group(function () {
             Route::post('/upload', [MediaUploadController::class, 'upload'])->name('admin.media.upload');
