@@ -61,7 +61,7 @@ export function FileUpload({
 
     return (
         <div className={`space-y-2 ${className}`}>
-            <Label className="text-gray-700 dark:text-gray-300">{label}</Label>
+            <Label>{label}</Label>
 
             <div className="space-y-3">
                 <input
@@ -73,19 +73,19 @@ export function FileUpload({
                 />
 
                 {value ? (
-                    <div className="relative group border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/50">
+                    <div className="relative group border-2 border-dashed rounded-lg p-4">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 {type === 'image' ? (
-                                    <FileImage className="w-8 h-8 text-blue-500 dark:text-blue-400" />
+                                    <FileImage className="w-8 h-8" />
                                 ) : (
-                                    <FileVideo className="w-8 h-8 text-purple-500 dark:text-purple-400" />
+                                    <FileVideo className="w-8 h-8" />
                                 )}
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    <p className="text-sm font-medium">
                                         {type === 'image' ? 'Gambar' : 'Video'} berhasil dipilih
                                     </p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    <p className="text-xs">
                                         Klik preview untuk melihat
                                     </p>
                                 </div>
@@ -97,7 +97,6 @@ export function FileUpload({
                                     variant="outline"
                                     size="sm"
                                     onClick={openPreview}
-                                    className="border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                 >
                                     <Eye className="w-4 h-4" />
                                 </Button>
@@ -126,13 +125,13 @@ export function FileUpload({
                     <>
                         <div
                             onClick={handleClick}
-                            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors"
+                            className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors"
                         >
-                            <Upload className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
-                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
+                            <Upload className="w-12 h-12 mx-auto" />
+                            <p className="text-sm font-medium mb-1">
                                 Klik untuk upload {type === 'image' ? 'gambar' : 'video'} baru
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                            <p className="text-xs">
                                 {type === 'image'
                                     ? 'PNG, JPG, JPEG hingga 5MB'
                                     : 'MP4, MOV, AVI hingga 10MB'
@@ -142,10 +141,10 @@ export function FileUpload({
 
                         <div className="relative">
                             <div className="absolute inset-0 flex items-center">
-                                <span className="w-full border-t border-gray-300 dark:border-gray-600" />
+                                <span className="w-full border-t" />
                             </div>
                             <div className="relative flex justify-center text-xs uppercase">
-                                <span className="bg-background px-2 text-gray-500 dark:text-gray-400">
+                                <span className="bg-background px-2">
                                     Atau
                                 </span>
                             </div>
