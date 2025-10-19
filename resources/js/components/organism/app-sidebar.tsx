@@ -17,9 +17,10 @@ import { index as portfolio } from '@/routes/admin/management-content/portfolio'
 import { index as services } from '@/routes/admin/management-content/services';
 import { index as message } from '@/routes/admin/message';
 import { index as setting } from '@/routes/admin/settings';
+import { index as media } from '@/routes/admin/media';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Cog, FactoryIcon, LayoutGrid, SendIcon } from 'lucide-react';
+import { Briefcase, Building2, Cog, FactoryIcon, FolderCog, Images, LayoutGrid, MessageSquare, SendIcon } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -31,22 +32,22 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Manajemen Konten',
         href: '#',
-        icon: LayoutGrid,
+        icon: FolderCog,
         items: [
             {
                 title: 'Tentang Kami',
                 href: about(),
-                icon: FactoryIcon,
+                icon: Building2,
             },
             {
                 title: 'Layanan',
                 href: services(),
-                icon: FactoryIcon,
+                icon: Briefcase,
             },
             {
                 title: 'Galeri',
                 href: gallery(),
-                icon: FactoryIcon,
+                icon: Images,
             },
             {
                 title: 'Portofolio',
@@ -69,9 +70,14 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
+        title: 'Media Library',
+        href: media(),
+        icon: Images,
+    },
+    {
         title: 'Feedback',
         href: 'https://github.com/laravel/react-starter-kit',
-        icon: SendIcon,
+        icon: MessageSquare,
     },
 ];
 

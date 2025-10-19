@@ -7,13 +7,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { FormField } from '@/components/molecules/form-field'
-import { DragDropUpload } from '@/components/molecules/drag-drop-upload'
 import { MultiImageUpload } from '@/components/molecules/multi-image-upload'
 import { SEOFields } from '@/components/molecules/seo-fields'
 import { RichTextEditor } from '@/components/editor/rich-text-editor'
 import portfolioRoute from '@/routes/admin/management-content/portfolio'
 import { post as portoRouteUpdate } from '@/routes/admin/management-content/portfolio/update'
 import { Loader2 } from 'lucide-react'
+import { FileUpload } from '../atoms/file-upload'
 
 interface Client {
     id?: number
@@ -21,7 +21,7 @@ interface Client {
     slug: string
     sector: string
     description: string
-    logo_path: string | null
+    logo_path: File | string | null
     images: string[]
     website_url: string | null
     is_active: boolean
@@ -189,13 +189,12 @@ export function PortfolioForm({ client, isEdit = false }: PortfolioFormProps) {
                             <CardTitle>Logo Klien</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <DragDropUpload
+                            <FileUpload
                                 label="Logo Perusahaan"
-                                value={data.logo_path}
+                                value={typeof data.logo_path === 'string' ? data.logo_path : null}
                                 onChange={(path) => setData('logo_path', path)}
-                                onDelete={() => setData('logo_path', null)}
                                 accept="image/*"
-                                maxSize={2}
+                                type="image"
                             />
                             {errors.logo_path && (
                                 <p className="text-sm text-destructive mt-2">{errors.logo_path}</p>

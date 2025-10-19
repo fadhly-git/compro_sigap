@@ -1,15 +1,16 @@
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Upload, X, Eye, FileImage, FileVideo } from 'lucide-react'
+import { Upload, X, Eye, FileImage, FileVideo, FolderOpen } from 'lucide-react'
 import { MediaPreviewModal } from '@/components/molecules/media-preview-modal'
+import { MediaPickerModal } from '@/components/molecules/media-picker-modal'
+import { toast } from 'sonner'
 
 interface FileUploadProps {
     label: string
     accept: string
     value: string | null
-    onChange: (file: File | null) => void
-    onDelete: () => void
+    onChange: (file: File | string | null) => void // Bisa file atau string path
     type: 'image' | 'video'
     error?: string
     className?: string
@@ -20,12 +21,12 @@ export function FileUpload({
     accept,
     value,
     onChange,
-    onDelete,
     type,
     error,
     className = ''
 }: FileUploadProps) {
     const [previewModal, setPreviewModal] = useState(false)
+    const [showMediaPicker, setShowMediaPicker] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,11 +35,13 @@ export function FileUpload({
     }
 
     const handleClick = () => {
-        fileInputRef.current?.click()
+        // Buka media picker modal, bukan file input
+        setShowMediaPicker(true)
     }
 
     const handleDelete = () => {
-        onDelete()
+        // Hanya clear value/preview, tidak ada request delete ke server
+        onChange(null)
         if (fileInputRef.current) {
             fileInputRef.current.value = ''
         }
@@ -50,11 +53,17 @@ export function FileUpload({
         }
     }
 
+    const handleMediaSelect = (path: string) => {
+        // Kirim path string langsung, bukan File object
+        onChange(path)
+        toast.success(`${type === 'image' ? 'Gambar' : 'Video'} berhasil dipilih dari library`)
+    }
+
     return (
         <div className={`space-y-2 ${className}`}>
             <Label className="text-gray-700 dark:text-gray-300">{label}</Label>
 
-            <div className="relative">
+            <div className="space-y-3">
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -114,21 +123,44 @@ export function FileUpload({
                         </div>
                     </div>
                 ) : (
-                    <div
-                        onClick={handleClick}
-                        className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors"
-                    >
-                        <Upload className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
-                        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
-                            Klik untuk upload {type === 'image' ? 'gambar' : 'video'}
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {type === 'image'
-                                ? 'PNG, JPG, JPEG hingga 5MB'
-                                : 'MP4, MOV, AVI hingga 10MB'
-                            }
-                        </p>
-                    </div>
+                    <>
+                        <div
+                            onClick={handleClick}
+                            className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors"
+                        >
+                            <Upload className="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500 mb-4" />
+                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-1">
+                                Klik untuk upload {type === 'image' ? 'gambar' : 'video'} baru
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {type === 'image'
+                                    ? 'PNG, JPG, JPEG hingga 5MB'
+                                    : 'MP4, MOV, AVI hingga 10MB'
+                                }
+                            </p>
+                        </div>
+
+                        <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                                <span className="w-full border-t border-gray-300 dark:border-gray-600" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                                <span className="bg-background px-2 text-gray-500 dark:text-gray-400">
+                                    Atau
+                                </span>
+                            </div>
+                        </div>
+
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full"
+                            onClick={() => setShowMediaPicker(true)}
+                        >
+                            <FolderOpen className="mr-2 h-4 w-4" />
+                            Pilih dari Media Library
+                        </Button>
+                    </>
                 )}
             </div>
 
@@ -142,6 +174,14 @@ export function FileUpload({
                 mediaUrl={value}
                 mediaType={type}
                 title={label}
+            />
+
+            <MediaPickerModal
+                isOpen={showMediaPicker}
+                onClose={() => setShowMediaPicker(false)}
+                onSelect={handleMediaSelect}
+                fileType={type}
+                title={`Pilih ${type === 'image' ? 'Gambar' : 'Video'}`}
             />
         </div>
     )

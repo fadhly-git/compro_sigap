@@ -11,7 +11,6 @@ import { SEOFields } from '@/components/molecules/seo-fields'
 import { toast } from 'sonner'
 import { Save, Loader2 } from 'lucide-react'
 import AboutUsController from '@/actions/App/Http/Controllers/Admin/ManagementContent/AboutController'
-import MediaUploadController from '@/actions/App/Http/Controllers/Admin/MediaUploadController'
 
 interface AboutUsData {
     id?: number
@@ -35,8 +34,8 @@ export function AboutForm({ aboutUs }: AboutFormProps) {
         description: aboutUs.description || '',
         vision: aboutUs.vision || '',
         mission: aboutUs.mission || '',
-        profile_image: null as File | null,
-        profile_video: null as File | null,
+        profile_image: null as File | string | null, // Bisa file atau string path
+        profile_video: null as File | string | null, // Bisa file atau string path
         meta_title: aboutUs.meta_title || '',
         meta_description: aboutUs.meta_description || '',
         meta_keywords: aboutUs.meta_keywords || '',
@@ -47,36 +46,6 @@ export function AboutForm({ aboutUs }: AboutFormProps) {
         image: aboutUs.profile_image || null,
         video: aboutUs.profile_video || null,
     })
-
-    const [newFiles, setNewFiles] = useState({
-        image: false,
-        video: false,
-    })
-
-    const handleDeleteMedia = async (type: 'image' | 'video') => {
-        try {
-            const response = await fetch(MediaUploadController.deleteMethod.url(), {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                },
-                body: JSON.stringify({ type }),
-            })
-
-            if (response.ok) {
-                toast.success('Media berhasil dihapus')
-                // Reset preview dan form data
-                setPreviews(prev => ({ ...prev, [type]: null }))
-                setNewFiles(prev => ({ ...prev, [type]: false }))
-                setData(type === 'image' ? 'profile_image' : 'profile_video', null)
-            } else {
-                toast.error('Gagal menghapus media')
-            }
-        } catch {
-            toast.error('Gagal menghapus media')
-        }
-    }
 
     // Handler untuk delete gambar dari rich text editor
     const handleEditorImageDelete = useCallback((url: string) => {
@@ -91,33 +60,28 @@ export function AboutForm({ aboutUs }: AboutFormProps) {
         }).catch(console.error)
     }, [])
 
-    const handleProfileImageChange = (file: File | null) => {
-        setData('profile_image', file)
+    const handleProfileImageChange = (fileOrPath: File | string | null) => {
+        if (fileOrPath instanceof File) {
+            // File upload baru
+            setData('profile_image', fileOrPath)
 
-        if (file) {
-            // Preview file baru
             const reader = new FileReader()
             reader.onload = (e) => {
                 setPreviews(prev => ({ ...prev, image: e.target?.result as string }))
             }
-            reader.readAsDataURL(file)
-            setNewFiles(prev => ({ ...prev, image: true }))
+            reader.readAsDataURL(fileOrPath)
+        } else if (typeof fileOrPath === 'string') {
+            // Path dari media library
+            setData('profile_image', fileOrPath)
+            setPreviews(prev => ({ ...prev, image: `${fileOrPath}` }))
         } else {
-            // Reset ke gambar asli atau null
-            setPreviews(prev => ({ ...prev, image: aboutUs.profile_image || null }))
-            setNewFiles(prev => ({ ...prev, image: false }))
+            // Reset/Delete - hanya clear preview dan data
+            setData('profile_image', null)
+            setPreviews(prev => ({ ...prev, image: null }))
         }
     }
 
-    const handleProfileImageDelete = () => {
-        if (newFiles.image) {
-            // Jika file baru, cukup reset
-            handleProfileImageChange(null)
-        } else {
-            // Jika file existing, panggil API delete
-            handleDeleteMedia('image')
-        }
-    }
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
@@ -125,8 +89,6 @@ export function AboutForm({ aboutUs }: AboutFormProps) {
         post(AboutUsController.update.url(), {
             onSuccess: () => {
                 toast.success('Data berhasil disimpan')
-                // Reset newFiles state setelah berhasil upload
-                setNewFiles({ image: false, video: false })
             },
             onError: () => {
                 toast.error('Terjadi kesalahan saat menyimpan data')
@@ -202,7 +164,6 @@ export function AboutForm({ aboutUs }: AboutFormProps) {
                     accept="image/*"
                     value={previews.image}
                     onChange={handleProfileImageChange}
-                    onDelete={handleProfileImageDelete}
                     type="image"
                     error={errors.profile_image}
                 />
