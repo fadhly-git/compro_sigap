@@ -4,6 +4,7 @@
 use App\Http\Controllers\Admin\ManagementContent\AboutController;
 use App\Http\Controllers\Admin\ManagementContent\ServicesController;
 use App\Http\Controllers\Admin\MediaUploadController;
+use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -58,15 +59,21 @@ Route::middleware(['auth'])->group(function () {
         });
 
         // message routes
-            Route::prefix('message')->group(function () {
-                Route::get('/', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('admin.message.index');
-                Route::get('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'show'])->name('admin.message.show');
-                Route::post('/{message}/reply', [\App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('admin.message.reply');
-                Route::post('/{message}/mark-read', [\App\Http\Controllers\Admin\MessageController::class, 'markAsRead'])->name('admin.message.mark-read');
-                Route::delete('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'destroy'])->name('admin.message.destroy');
-            });
+        Route::prefix('message')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('admin.message.index');
+            Route::get('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'show'])->name('admin.message.show');
+            Route::post('/{message}/reply', [\App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('admin.message.reply');
+            Route::post('/{message}/mark-read', [\App\Http\Controllers\Admin\MessageController::class, 'markAsRead'])->name('admin.message.mark-read');
+            Route::delete('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'destroy'])->name('admin.message.destroy');
+        });
+
+        Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
+        Route::post('/settings', [SettingsController::class, 'update'])->name('admin.settings.update');
+        Route::post('/settings/delete-media', [SettingsController::class, 'deleteMedia'])->name('admin.settings.delete-media');
 
         Route::prefix('media')->group(function () {
+            Route::get('/', [MediaUploadController::class, 'index'])->name('admin.media.index');
+            Route::get('/data', [MediaUploadController::class, 'data'])->name('admin.media.data');
             Route::post('/upload', [MediaUploadController::class, 'upload'])->name('admin.media.upload');
             Route::delete('/delete', [MediaUploadController::class, 'delete'])->name('admin.media.delete');
         });

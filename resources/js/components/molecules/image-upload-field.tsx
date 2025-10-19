@@ -3,8 +3,9 @@
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react'
+import { Upload, X, Image as ImageIcon, Loader2, FolderOpen } from 'lucide-react'
 import { toast } from 'sonner'
+import { MediaPickerModal } from './media-picker-modal'
 
 interface ImageUploadFieldProps {
     label: string
@@ -31,6 +32,7 @@ export function ImageUploadField({
 }: ImageUploadFieldProps) {
     const [uploading, setUploading] = useState(false)
     const [preview, setPreview] = useState<string>(value ? `/storage/${value}` : '')
+    const [showMediaPicker, setShowMediaPicker] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
 
     const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -98,7 +100,7 @@ export function ImageUploadField({
 
         try {
             const response = await fetch('/admin/media/delete', {
-                method: 'POST',
+                method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
@@ -125,7 +127,11 @@ export function ImageUploadField({
         fileInputRef.current?.click()
     }
 
-
+    const handleMediaSelect = (path: string, url: string) => {
+        setPreview(url)
+        onChange(path)
+        toast.success('Gambar berhasil dipilih dari library')
+    }
 
     return (
         <div className={`space-y-4 ${className}`}>
@@ -166,33 +172,56 @@ export function ImageUploadField({
                     </div>
                 </div>
             ) : (
-                <div
-                    className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center cursor-pointer hover:border-muted-foreground/40 transition-colors"
-                    onClick={openFileDialog}
-                >
-                    <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
-                    <div className="space-y-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            disabled={uploading}
-                        >
-                            {uploading ? (
-                                <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Uploading...
-                                </>
-                            ) : (
-                                <>
-                                    <Upload className="mr-2 h-4 w-4" />
-                                    Pilih Gambar
-                                </>
-                            )}
-                        </Button>
-                        <p className="text-sm text-muted-foreground">
-                            PNG, JPG, GIF, WEBP maksimal 5MB
-                        </p>
+                <div className="space-y-3">
+                    <div
+                        className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center cursor-pointer hover:border-muted-foreground/40 transition-colors"
+                        onClick={openFileDialog}
+                    >
+                        <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
+                        <div className="space-y-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                disabled={uploading}
+                            >
+                                {uploading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Uploading...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Upload className="mr-2 h-4 w-4" />
+                                        Upload Gambar Baru
+                                    </>
+                                )}
+                            </Button>
+                            <p className="text-sm text-muted-foreground">
+                                PNG, JPG, GIF, WEBP maksimal 5MB
+                            </p>
+                        </div>
                     </div>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-background px-2 text-muted-foreground">
+                                Atau
+                            </span>
+                        </div>
+                    </div>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => setShowMediaPicker(true)}
+                    >
+                        <FolderOpen className="mr-2 h-4 w-4" />
+                        Pilih dari Media Library
+                    </Button>
                 </div>
             )}
 
@@ -203,6 +232,14 @@ export function ImageUploadField({
                 onChange={handleFileSelect}
                 disabled={uploading}
                 className="hidden"
+            />
+
+            <MediaPickerModal
+                isOpen={showMediaPicker}
+                onClose={() => setShowMediaPicker(false)}
+                onSelect={handleMediaSelect}
+                fileType="image"
+                title="Pilih Gambar"
             />
         </div>
     )

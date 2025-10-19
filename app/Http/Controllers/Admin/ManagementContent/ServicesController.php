@@ -34,7 +34,7 @@ class ServicesController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'image' => 'nullable', // Bisa file atau string path
             'isActive' => 'boolean',
             'sortOrder' => 'integer|min:0',
             'metaTitle' => 'nullable|string|max:60',
@@ -47,8 +47,16 @@ class ServicesController extends Controller
             $validated['slug'] = Str::slug($validated['title']);
         }
 
+        // Handle image: bisa dari upload file baru atau path dari media library
         if ($request->hasFile('image')) {
+            // Upload file baru
             $validated['image'] = $request->file('image')->store('services', 'public');
+        } elseif (is_string($request->input('image')) && !empty($request->input('image'))) {
+            // Path dari media library
+            $validated['image'] = $request->input('image');
+        } else {
+            // Tidak ada image
+            unset($validated['image']);
         }
 
         Service::create($validated);
@@ -77,7 +85,7 @@ class ServicesController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'content' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
+            'image' => 'nullable', // Bisa file atau string path
             'isActive' => 'boolean',
             'sortOrder' => 'integer|min:0',
             'metaTitle' => 'nullable|string|max:60',
@@ -95,12 +103,21 @@ class ServicesController extends Controller
 
         Log::info('Updating service', $request->all());
 
+        // Handle image: bisa dari upload file baru atau path dari media library
         if ($request->hasFile('image')) {
             // Delete old image
             if ($service->image) {
                 Storage::disk('public')->delete($service->image);
             }
+            // Upload file baru
             $validated['image'] = $request->file('image')->store('services', 'public');
+        } elseif (is_string($request->input('image')) && !empty($request->input('image'))) {
+            // Path dari media library
+            // Jika path berbeda dari yang lama, hapus yang lama
+            if ($service->image && $service->image !== $request->input('image')) {
+                Storage::disk('public')->delete($service->image);
+            }
+            $validated['image'] = $request->input('image');
         } else {
             // Keep old image if no new file
             unset($validated['image']);

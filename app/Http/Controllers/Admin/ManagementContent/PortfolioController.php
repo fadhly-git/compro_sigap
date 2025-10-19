@@ -59,9 +59,9 @@ class PortfolioController extends Controller
             'slug' => 'nullable|string|max:255|unique:clients,slug',
             'sector' => 'required|string|max:255',
             'description' => 'required|string',
-            'logo_path' => 'nullable|string',
+            'logo_path' => 'nullable', // Bisa file atau string path
             'images' => 'nullable|array',
-            'images.*' => 'string',
+            'images.*' => 'nullable', // Bisa file atau string
             'website_url' => 'nullable|url',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer',
@@ -72,6 +72,30 @@ class PortfolioController extends Controller
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['name']);
+        }
+
+        // Handle logo: bisa dari upload file baru atau path dari media library
+        if ($request->hasFile('logo_path')) {
+            $validated['logo_path'] = $request->file('logo_path')->store('portfolio/logos', 'public');
+        } elseif (is_string($request->input('logo_path')) && !empty($request->input('logo_path'))) {
+            $validated['logo_path'] = $request->input('logo_path');
+        } else {
+            $validated['logo_path'] = null;
+        }
+
+        // Handle images array: bisa dari upload file baru atau path dari media library
+        if (!empty($validated['images'])) {
+            $processedImages = [];
+            foreach ($validated['images'] as $image) {
+                if (is_string($image) && !empty($image)) {
+                    // Path dari media library
+                    $processedImages[] = $image;
+                }
+                // Note: File upload untuk images akan ditangani di frontend dengan upload terpisah
+            }
+            $validated['images'] = $processedImages;
+        } else {
+            $validated['images'] = [];
         }
 
         $client = Client::create($validated);
@@ -102,9 +126,9 @@ class PortfolioController extends Controller
             'slug' => 'nullable|string|max:255|unique:clients,slug,' . $portfolio->id,
             'sector' => 'required|string|max:255',
             'description' => 'required|string',
-            'logo_path' => 'nullable|string',
+            'logo_path' => 'nullable', // Bisa file atau string path
             'images' => 'nullable|array',
-            'images.*' => 'string',
+            'images.*' => 'nullable', // Bisa file atau string
             'website_url' => 'nullable|url',
             'is_active' => 'boolean',
             'sort_order' => 'nullable|integer',
@@ -113,18 +137,51 @@ class PortfolioController extends Controller
             'meta_keywords' => 'nullable|string|max:500',
         ]);
 
-        // Handle old image deletion
-        $oldImages = $portfolio->images ?? [];
-        $newImages = $validated['images'] ?? [];
-
-        $imagesToDelete = array_diff($oldImages, $newImages);
-        foreach ($imagesToDelete as $imagePath) {
-            Storage::disk('public')->delete($imagePath);
+        // Handle logo: bisa dari upload file baru atau path dari media library
+        if ($request->hasFile('logo_path')) {
+            // Delete old logo
+            if ($portfolio->logo_path) {
+                Storage::disk('public')->delete($portfolio->logo_path);
+            }
+            $validated['logo_path'] = $request->file('logo_path')->store('portfolio/logos', 'public');
+        } elseif (is_string($request->input('logo_path')) && !empty($request->input('logo_path'))) {
+            // Path dari media library
+            // Jika path berbeda dari yang lama, hapus yang lama
+            if ($portfolio->logo_path && $portfolio->logo_path !== $request->input('logo_path')) {
+                Storage::disk('public')->delete($portfolio->logo_path);
+            }
+            $validated['logo_path'] = $request->input('logo_path');
+        } elseif ($request->input('logo_path') === null) {
+            // Explicitly set to null if requested
+            if ($portfolio->logo_path) {
+                Storage::disk('public')->delete($portfolio->logo_path);
+            }
+            $validated['logo_path'] = null;
+        } else {
+            // Keep existing logo
+            unset($validated['logo_path']);
         }
 
-        // Handle logo deletion
-        if ($portfolio->logo_path && $portfolio->logo_path !== ($validated['logo_path'] ?? null)) {
-            Storage::disk('public')->delete($portfolio->logo_path);
+        // Handle images array
+        $oldImages = $portfolio->images ?? [];
+        $newImages = [];
+
+        if (!empty($validated['images'])) {
+            foreach ($validated['images'] as $image) {
+                if (is_string($image) && !empty($image)) {
+                    $newImages[] = $image;
+                }
+            }
+        }
+
+        $validated['images'] = $newImages;
+
+        // Delete images yang tidak ada di list baru
+        $imagesToDelete = array_diff($oldImages, $newImages);
+        foreach ($imagesToDelete as $imagePath) {
+            if ($imagePath) {
+                Storage::disk('public')->delete($imagePath);
+            }
         }
 
         $portfolio->update($validated);

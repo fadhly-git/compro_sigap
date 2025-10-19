@@ -142,7 +142,7 @@ class GalleryController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image_path' => 'required|string', // Path dari MediaUploadController
+            'image_path' => 'required|string', // Selalu berupa string path (dari upload atau media library)
             'alt_text' => 'nullable|string|max:255',
             'is_active' => 'boolean',
             'sort_order' => 'integer|min:0',
@@ -189,7 +189,7 @@ class GalleryController extends Controller
 
         $item->delete();
 
-        return redirect()->route('admin.management-content.gallery.items', $category)
+        return redirect()->route('admin.management-content.gallery.items.index', $category)
             ->with('success', 'Item galeri berhasil dihapus');
     }
 }

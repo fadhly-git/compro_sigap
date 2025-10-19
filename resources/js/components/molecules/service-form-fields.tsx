@@ -9,7 +9,6 @@ interface ServiceFormFieldsProps {
     formData: ServiceFormData
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onFieldChange: (field: keyof ServiceFormData, value: any) => void
-    onImageDelete: () => void
     errors?: Record<string, string>
     existingImageUrl?: string | null
 }
@@ -17,14 +16,14 @@ interface ServiceFormFieldsProps {
 export function ServiceFormFields({
     formData,
     onFieldChange,
-    onImageDelete,
     errors = {},
     existingImageUrl = null
 }: ServiceFormFieldsProps) {
     // Determine which image to show: new upload or existing
-    const imagePreview = formData.image
-        ? URL.createObjectURL(formData.image)
-        : existingImageUrl
+        const imagePreview =
+            formData.image instanceof File
+                ? URL.createObjectURL(formData.image)
+                : existingImageUrl || null
 
     return (
         <div className="space-y-6">
@@ -61,7 +60,6 @@ export function ServiceFormFields({
                 accept="image/*"
                 value={imagePreview}
                 onChange={(file) => onFieldChange('image', file)}
-                onDelete={onImageDelete}
                 type="image"
                 error={errors.image}
             />
