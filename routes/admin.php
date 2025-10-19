@@ -32,9 +32,30 @@ Route::middleware(['auth'])->group(function () {
             })->name('admin.management-content.portfolio');
         });
 
+<<<<<<< Updated upstream
         Route::prefix('media')->group(function () {
             Route::post('/upload', [MediaController::class, 'upload'])->name('admin.media.upload');
             Route::delete('/delete', [MediaController::class, 'delete'])->name('admin.media.delete');
+=======
+        // message routes
+        Route::prefix('message')->group(function () {
+            Route::get('/', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('admin.message.index');
+            Route::get('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'show'])->name('admin.message.show');
+            Route::post('/{message}/reply', [\App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('admin.message.reply');
+            Route::post('/{message}/mark-read', [\App\Http\Controllers\Admin\MessageController::class, 'markAsRead'])->name('admin.message.mark-read');
+            Route::delete('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'destroy'])->name('admin.message.destroy');
+        });
+
+        // settings routes
+        Route::get('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('admin.settings.index');
+        Route::post('/settings', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('admin.settings.update');
+        Route::post('/settings/delete-media', [\App\Http\Controllers\Admin\SettingsController::class, 'deleteMedia'])->name('admin.settings.delete-media');
+
+        Route::prefix('media')->group(function () {
+            Route::get('/', [MediaUploadController::class, 'index'])->name('admin.media.index');
+            Route::post('/upload', [MediaUploadController::class, 'upload'])->name('admin.media.upload');
+            Route::delete('/delete', [MediaUploadController::class, 'delete'])->name('admin.media.delete');
+>>>>>>> Stashed changes
         });
     });
 });
