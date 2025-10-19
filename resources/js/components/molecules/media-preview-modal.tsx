@@ -30,6 +30,8 @@ export function MediaPreviewModal({
 
     // Parse mediaUrl jika berupa array JSON
     let parsedUrl: string | null = null;
+    let isExternalUrl = false;
+
     if (mediaUrl) {
         try {
             if (typeof mediaUrl === 'string' && mediaUrl.trim().startsWith('[')) {
@@ -38,6 +40,11 @@ export function MediaPreviewModal({
             } else {
                 parsedUrl = mediaUrl;
             }
+
+            // Check if URL is external (http/https)
+            if (parsedUrl && (parsedUrl.startsWith('http://') || parsedUrl.startsWith('https://'))) {
+                isExternalUrl = true;
+            }
         } catch {
             parsedUrl = null;
         }
@@ -45,9 +52,12 @@ export function MediaPreviewModal({
 
     if (!parsedUrl) return null;
 
+    // Build full URL
+    const fullUrl = isExternalUrl ? parsedUrl : `/storage/${parsedUrl}`;
+
     const handleDownload = () => {
         const link = document.createElement('a');
-        link.href = parsedUrl;
+        link.href = fullUrl;
         link.download = `${title.toLowerCase().replace(/\s+/g, '-')}.${mediaType === 'image' ? 'jpg' : 'mp4'}`;
         document.body.appendChild(link);
         link.click();
@@ -55,58 +65,52 @@ export function MediaPreviewModal({
     };
 
     const handleOpenInNewTab = () => {
-        window.open(parsedUrl, '_blank');
+        window.open(fullUrl, '_blank');
     };
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-h-[90vh] max-w-4xl border bg-white p-0 dark:border-gray-700 dark:bg-gray-900">
-                <DialogHeader className="border-b p-4 dark:border-gray-700">
+            <DialogContent className="max-h-[90vh] max-w-4xl border">
+                <DialogHeader className="border-b p-4">
                     <div className="flex items-center justify-between">
-                        <DialogTitle className="text-gray-900 dark:text-gray-100">
+                        <DialogTitle>
                             Preview: {title}
                         </DialogTitle>
                     </div>
                 </DialogHeader>
 
-                <div className="relative flex-1 overflow-hidden bg-gray-50 dark:bg-gray-800">
+                <div
+                    className="flex-1 flex items-center justify-center overflow-auto"
+                    style={{ minHeight: 400, maxHeight: '70vh' }}
+                >
                     {mediaType === 'image' ? (
-                        <div className="relative flex h-full min-h-[400px] w-full items-center justify-center">
-                            {isLoading && (
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
-                                </div>
-                            )}
-                            <img
-                                src={`/storage/${parsedUrl}`}
-                                alt={title}
-                                className="max-h-[70vh] max-w-full object-contain"
-                                onLoad={() => setIsLoading(false)}
-                                onError={() => setIsLoading(false)}
-                            />
-                        </div>
+                        <img
+                            src={fullUrl}
+                            alt={title}
+                            className="max-h-full max-w-full object-contain"
+                            onLoad={() => setIsLoading(false)}
+                            onError={() => setIsLoading(false)}
+                        />
                     ) : (
-                        <div className="relative flex h-full min-h-[400px] w-full items-center justify-center">
-                            {isLoading && (
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-blue-600 dark:border-blue-400"></div>
-                                </div>
-                            )}
-                            <video
-                                src={parsedUrl}
-                                controls
-                                className="max-h-[70vh] max-w-full rounded"
-                                onLoadedData={() => setIsLoading(false)}
-                                onError={() => setIsLoading(false)}
-                                style={{ backgroundColor: 'transparent' }}
-                            >
-                                <source src={parsedUrl} />
-                                Browser Anda tidak mendukung video.
-                            </video>
+                        <video
+                            src={fullUrl}
+                            controls
+                            className="max-h-full max-w-full rounded object-contain"
+                            onLoadedData={() => setIsLoading(false)}
+                            onError={() => setIsLoading(false)}
+                            style={{ backgroundColor: 'transparent' }}
+                        >
+                            <source src={fullUrl} />
+                            Browser Anda tidak mendukung video.
+                        </video>
+                    )}
+                    {isLoading && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div className="h-8 w-8 animate-spin rounded-full border-b-2"></div>
                         </div>
                     )}
                 </div>
-                <DialogDescription className="flex items-center justify-end space-x-2 border-t p-4 dark:border-gray-700">
+                <DialogDescription className="flex items-center justify-end space-x-2 border-t p-4">
                     <Button
                         variant="outline"
                         size="sm"
