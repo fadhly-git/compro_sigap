@@ -57,6 +57,15 @@ Route::middleware(['auth'])->group(function () {
             Route::post('portfolio/update-order', [\App\Http\Controllers\Admin\ManagementContent\PortfolioController::class, 'updateOrder'])->name('admin.management-content.portfolio.update-order');
         });
 
+        // message routes
+            Route::prefix('message')->group(function () {
+                Route::get('/', [\App\Http\Controllers\Admin\MessageController::class, 'index'])->name('admin.message.index');
+                Route::get('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'show'])->name('admin.message.show');
+                Route::post('/{message}/reply', [\App\Http\Controllers\Admin\MessageController::class, 'reply'])->name('admin.message.reply');
+                Route::post('/{message}/mark-read', [\App\Http\Controllers\Admin\MessageController::class, 'markAsRead'])->name('admin.message.mark-read');
+                Route::delete('/{message}', [\App\Http\Controllers\Admin\MessageController::class, 'destroy'])->name('admin.message.destroy');
+            });
+
         Route::prefix('media')->group(function () {
             Route::post('/upload', [MediaUploadController::class, 'upload'])->name('admin.media.upload');
             Route::delete('/delete', [MediaUploadController::class, 'delete'])->name('admin.media.delete');

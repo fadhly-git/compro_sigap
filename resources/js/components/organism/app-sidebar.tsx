@@ -12,6 +12,10 @@ import {
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes/admin';
 import { index as about } from '@/routes/admin/management-content/about';
+import { index as gallery } from '@/routes/admin/management-content/gallery';
+import { index as portfolio } from '@/routes/admin/management-content/portfolio';
+import { index as services } from '@/routes/admin/management-content/services';
+import { index as message } from '@/routes/admin/message';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import { FactoryIcon, LayoutGrid, SendIcon } from 'lucide-react';
@@ -31,25 +35,30 @@ const mainNavItems: NavItem[] = [
             {
                 title: 'Tentang Kami',
                 href: about(),
-                icon: FactoryIcon
+                icon: FactoryIcon,
             },
             {
                 title: 'Layanan',
-                href: '/admin/management-content/services',
-                icon: FactoryIcon
+                href: services(),
+                icon: FactoryIcon,
             },
             {
                 title: 'Galeri',
-                href: '/admin/management-content/gallery',
-                icon: FactoryIcon
+                href: gallery(),
+                icon: FactoryIcon,
             },
             {
                 title: 'Portofolio',
-                href: '/admin/management-content/portfolio',
-                icon: FactoryIcon
-            }
-        ]
-    }
+                href: portfolio(),
+                icon: FactoryIcon,
+            },
+        ],
+    },
+    {
+        title: 'Pesan Kontak',
+        href: message(),
+        icon: SendIcon,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
