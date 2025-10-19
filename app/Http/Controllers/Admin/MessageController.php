@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Mail\NewMessageNotification;
 use App\Mail\MessageReplyNotification;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -68,6 +69,8 @@ class MessageController extends Controller
 
     public function reply(Request $request, Message $message)
     {
+        Log::info('function reply called');
+        Log::info('Admin replying to message', $request->all());
         $request->validate([
             'reply' => 'required|string|min:10',
         ]);
@@ -86,10 +89,20 @@ class MessageController extends Controller
                 new MessageReplyNotification($message, $request->reply)
             );
 
+            Log::info('Message reply email sent', [
+                'message_id' => $message->id,
+                'to' => $message->email,
+            ]);
+
             return redirect()
                 ->route('admin.message.show', $message)
                 ->with('success', 'Balasan berhasil dikirim');
         } catch (\Exception $e) {
+            Log::error('Failed to send message reply email', [
+                'message_id' => $message->id ?? null,
+                'to' => $message->email ?? null,
+                'error' => $e->getMessage(),
+            ]);
             return back()->with('error', 'Gagal mengirim balasan: ' . $e->getMessage());
         }
     }

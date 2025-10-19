@@ -185,24 +185,24 @@
             <div class="message-info">
                 <div class="info-row">
                     <span class="info-label">Dari:</span>
-                    <span class="info-value">{{ $message->name }}</span>
+                    <span class="info-value">{{ $customerMessage->name }}</span>
                 </div>
 
                 <div class="info-row">
                     <span class="info-label">Email:</span>
                     <span class="info-value">
-                        <a href="mailto:{{ $message->email }}" style="color: #3b82f6; text-decoration: none;">
-                            {{ $message->email }}
+                        <a href="mailto:{{ $customerMessage->email }}" style="color: #3b82f6; text-decoration: none;">
+                            {{ $customerMessage->email }}
                         </a>
                     </span>
                 </div>
 
-                @if($message->phone)
+                @if($customerMessage->phone)
                 <div class="info-row">
                     <span class="info-label">Telepon:</span>
                     <span class="info-value">
-                        <a href="tel:{{ $message->phone }}" style="color: #3b82f6; text-decoration: none;">
-                            {{ $message->phone }}
+                        <a href="tel:{{ $customerMessage->phone }}" style="color: #3b82f6; text-decoration: none;">
+                            {{ $customerMessage->phone }}
                         </a>
                     </span>
                 </div>
@@ -211,16 +211,16 @@
                 <div class="info-row">
                     <span class="info-label">Waktu:</span>
                     <span class="info-value">
-                        {{ $message->created_at->format('d M Y, H:i') }} WIB
+                        {{ $customerMessage->created_at->format('d M Y, H:i') }} WIB
                     </span>
                 </div>
 
-                @if($message->priority)
+                @if($customerMessage->priority)
                 <div class="info-row">
                     <span class="info-label">Prioritas:</span>
                     <span class="info-value">
-                        <span class="priority-badge priority-{{ $message->priority }}">
-                            {{ ucfirst($message->priority) }}
+                        <span class="priority-badge priority-{{ $customerMessage->priority }}">
+                            {{ ucfirst($customerMessage->priority) }}
                         </span>
                     </span>
                 </div>
@@ -229,11 +229,11 @@
 
             <!-- Subject -->
             <div class="message-subject">
-                {{ $message->subject }}
+                {{ $customerMessage->subject }}
             </div>
 
             <!-- Message Content -->
-            <div class="message-content">{{ $message->message }}</div>
+            <div class="message-content">{{ $customerMessage->message }}</div>
 
             <!-- Action Button -->
             <div style="text-align: center; margin: 32px 0;">
@@ -246,12 +246,12 @@
             <div style="background-color: #f9fafb; border-radius: 8px; padding: 20px; margin-top: 24px;">
                 <h3 style="margin: 0 0 16px 0; color: #374151; font-size: 16px;">Aksi Cepat:</h3>
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                    <a href="mailto:{{ $message->email }}?subject=Re: {{ $message->subject }}"
+                    <a href="mailto:{{ $customerMessage->email }}?subject=Re: {{ $customerMessage->subject }}"
                        style="color: #3b82f6; text-decoration: none; font-size: 14px; font-weight: 500;">
                         ✉️ Balas via Email
                     </a>
-                    @if($message->phone)
-                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $message->phone) }}"
+                    @if($customerMessage->phone)
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $customerMessage->phone) }}"
                        style="color: #059669; text-decoration: none; font-size: 14px; font-weight: 500;">
                         💬 Chat WhatsApp
                     </a>

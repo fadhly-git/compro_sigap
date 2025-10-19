@@ -6,6 +6,7 @@ use App\Models\Message;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -32,7 +33,12 @@ class MessageReplyNotification extends Mailable
     {
         return new Envelope(
             subject: 'Re: ' . $this->message->subject,
-            replyTo: [config('mail.from.address')],
+            replyTo: [
+                new Address(
+                    config('mail.from.address'),
+                    config('mail.from.name')
+                )
+            ],
         );
     }
 
@@ -44,7 +50,7 @@ class MessageReplyNotification extends Mailable
         return new Content(
             view: 'emails.user.message-reply',
             with: [
-                'message' => $this->message,
+                'customerMessage' => $this->message,
                 'replyContent' => $this->replyContent,
             ],
         );

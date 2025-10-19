@@ -155,7 +155,7 @@
         <!-- Content -->
         <div class="email-content">
             <div class="greeting">
-                Halo {{ $message->name }},
+                Halo {{ $customerMessage->name }},
             </div>
 
             <p>
@@ -171,10 +171,10 @@
             <!-- Original Message -->
             <div class="original-message">
                 <h4>Pesan Asli Anda:</h4>
-                <div class="original-subject">{{ $message->subject }}</div>
-                <div class="original-content">{{ $message->message }}</div>
+                <div class="original-subject">{{ $customerMessage->subject }}</div>
+                <div class="original-content">{{ $customerMessage->message }}</div>
                 <div style="font-size: 12px; color: #9ca3af; margin-top: 12px;">
-                    Dikirim pada: {{ $message->created_at->format('d M Y, H:i') }} WIB
+                    Dikirim pada: {{ $customerMessage->created_at->format('d M Y, H:i') }} WIB
                 </div>
             </div>
 

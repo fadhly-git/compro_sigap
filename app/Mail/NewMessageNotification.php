@@ -42,7 +42,7 @@ class NewMessageNotification extends Mailable
         return new Content(
             view: 'emails.admin.new-message',
             with: [
-                'message' => $this->message,
+                'customerMessage' => $this->message,
                 'adminUrl' => route('admin.message.show', $this->message->id),
             ],
         );
