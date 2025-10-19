@@ -74,7 +74,6 @@ export function ServiceForm({ service, isEditing = false }: ServiceFormProps) {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault()
-        console.log(data)
 
         if (!data.title.trim()) {
             toast.error('Judul layanan harus diisi')
