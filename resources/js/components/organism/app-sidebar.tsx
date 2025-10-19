@@ -16,9 +16,10 @@ import { index as gallery } from '@/routes/admin/management-content/gallery';
 import { index as portfolio } from '@/routes/admin/management-content/portfolio';
 import { index as services } from '@/routes/admin/management-content/services';
 import { index as message } from '@/routes/admin/message';
+import { index as setting } from '@/routes/admin/settings';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { FactoryIcon, LayoutGrid, SendIcon } from 'lucide-react';
+import { Cog, FactoryIcon, LayoutGrid, SendIcon } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -58,6 +59,11 @@ const mainNavItems: NavItem[] = [
         title: 'Pesan Kontak',
         href: message(),
         icon: SendIcon,
+    },
+    {
+        title: 'Pengaturan',
+        href: setting(),
+        icon: Cog,
     },
 ];
 

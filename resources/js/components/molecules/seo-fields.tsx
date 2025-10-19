@@ -1,17 +1,17 @@
 // resources/js/components/molecules/seo-fields.tsx
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 
 export interface SEOFieldsProps {
-    metaTitle: string
-    metaDescription: string
-    metaKeywords: string
-    slug: string
-    onMetaTitleChange: (value: string) => void
-    onMetaDescriptionChange: (value: string) => void
-    onMetaKeywordsChange: (value: string) => void
-    onSlugChange: (value: string) => void
+    metaTitle: string;
+    metaDescription: string;
+    metaKeywords: string;
+    slug?: string;
+    onMetaTitleChange: (value: string) => void;
+    onMetaDescriptionChange: (value: string) => void;
+    onMetaKeywordsChange: (value: string) => void;
+    onSlugChange: (value: string) => void;
 }
 
 export function SEOFields({
@@ -25,7 +25,7 @@ export function SEOFields({
     onSlugChange,
 }: SEOFieldsProps) {
     return (
-        <div className="space-y-4 w-full">
+        <div className="w-full space-y-4">
             <div className="space-y-2">
                 <Label htmlFor="meta_title">Meta Title</Label>
                 <Input
@@ -63,25 +63,25 @@ export function SEOFields({
                     onChange={(e) => onMetaKeywordsChange(e.target.value)}
                     placeholder="keyword1, keyword2, keyword3..."
                 />
-                <p className="text-xs text-gray-500">
-                    Pisahkan dengan koma
-                </p>
+                <p className="text-xs text-gray-500">Pisahkan dengan koma</p>
             </div>
 
-            <div className="space-y-2">
-                <Label htmlFor="slug">Slug URL</Label>
-                <Input
-                    id="slug"
-                    value={slug}
-                    onChange={(e) => onSlugChange(e.target.value)}
-                    placeholder="tentang-kami"
-                    readOnly
-                    className="bg-muted cursor-not-allowed"
-                />
-                <p className="text-xs text-gray-500">
-                    Slug dibuat otomatis dari judul
-                </p>
-            </div>
+            {slug !== undefined && (
+                <div className="space-y-2">
+                    <Label htmlFor="slug">Slug URL</Label>
+                    <Input
+                        id="slug"
+                        value={slug}
+                        onChange={(e) => onSlugChange(e.target.value)}
+                        placeholder="tentang-kami"
+                        readOnly
+                        className="cursor-not-allowed bg-muted"
+                    />
+                    <p className="text-xs text-gray-500">
+                        Slug dibuat otomatis dari judul
+                    </p>
+                </div>
+            )}
         </div>
-    )
+    );
 }

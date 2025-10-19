@@ -8,6 +8,7 @@ interface FormFieldProps {
     value: string
     onChange: (value: string) => void
     type?: 'input' | 'textarea' | 'number'
+    inputType?: string
     placeholder?: string
     required?: boolean
     className?: string
@@ -25,6 +26,7 @@ export function FormField({
     placeholder,
     required = false,
     className = '',
+    inputType,
     error,
     maxLength,
     readonly = false
@@ -59,6 +61,7 @@ export function FormField({
                 <Input
                     id={name}
                     name={name}
+                    type={inputType || 'text'}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}

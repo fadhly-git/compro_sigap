@@ -175,9 +175,10 @@ export default function MessageShow({ message }: Props) {
                                             </Badge>
                                         )}
                                     </div>
-                                    <div className="p-4 rounded-lg">
+                                    <div className="p-4 rounded-lg overflow-x-auto">
                                         <div
-                                            className="prose prose-sm max-w-none"
+                                            className="prose prose-sm max-w-full break-words"
+                                            style={{ wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}
                                             dangerouslySetInnerHTML={{ __html: message.adminReply }}
                                         />
                                         {message.replied_by_user && (
