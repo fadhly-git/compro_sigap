@@ -148,7 +148,6 @@
     <div class="email-container">
         <!-- Header -->
         <div class="email-header">
-            <h1>💬 Balasan untuk Pesan Anda</h1>
             <p>Tim kami telah menanggapi pesan Anda</p>
         </div>
 

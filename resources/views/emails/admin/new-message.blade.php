@@ -105,7 +105,8 @@
         .action-button {
             display: inline-block;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
+            text-shadow: none;
+            color: #ffffff;
             text-decoration: none;
             padding: 14px 28px;
             border-radius: 8px;
@@ -214,17 +215,6 @@
                         {{ $customerMessage->created_at->format('d M Y, H:i') }} WIB
                     </span>
                 </div>
-
-                @if($customerMessage->priority)
-                <div class="info-row">
-                    <span class="info-label">Prioritas:</span>
-                    <span class="info-value">
-                        <span class="priority-badge priority-{{ $customerMessage->priority }}">
-                            {{ ucfirst($customerMessage->priority) }}
-                        </span>
-                    </span>
-                </div>
-                @endif
             </div>
 
             <!-- Subject -->

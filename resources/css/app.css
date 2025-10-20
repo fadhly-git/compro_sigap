@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin "@tailwindcss/typography";
 
 @import "tw-animate-css";
 
@@ -221,6 +222,10 @@
   background: oklch(0.92 0.04 220);
   border-radius: 5px;
   transition: background 0.3s ease;
+  -webkit-transition: background 0.3s ease;
+  -moz-transition: background 0.3s ease;
+  -ms-transition: background 0.3s ease;
+  -o-transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -245,6 +250,51 @@ body {
 /* Smooth scroll behavior */
 html {
   scroll-behavior: smooth;
+}
+
+@layer utilities {
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-in;
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .animate-fade-in-down {
+        animation: fadeInDown 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
 
 /* Animation keyframes for Hero Section */
@@ -340,3 +390,142 @@ html {
 .delay-100 {
   animation-delay: 0.2s;
 }
+
+/* Infinite scroll animation for carousel */
+@keyframes infinite-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.animate-infinite-scroll {
+  animation: infinite-scroll 40s linear infinite;
+}
+
+/* Faster animation for fewer items */
+.animate-infinite-scroll-fast {
+  animation: infinite-scroll 25s linear infinite;
+}
+
+.prose {
+  @apply text-foreground leading-relaxed max-w-7xl w-full text-justify;
+  color: inherit; /* Pastikan warna mengikuti theme */
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+  @apply font-bold text-foreground mt-8 mb-4 leading-tight;
+  color: inherit;
+}
+
+.prose h1 {
+  @apply text-3xl md:text-4xl mb-6;
+}
+.prose h2 {
+  @apply text-2xl md:text-3xl mb-5;
+}
+.prose h3 {
+  @apply text-xl md:text-2xl mb-4;
+}
+.prose h4 {
+  @apply text-lg md:text-xl mb-3;
+}
+.prose h5 {
+  @apply text-base md:text-lg mb-3;
+}
+.prose h6 {
+  @apply text-sm md:text-base mb-2;
+}
+
+.prose p {
+  @apply mb-6 text-base md:text-lg leading-7;
+  color: inherit;
+}
+
+/* Perbaikan untuk lists */
+.prose ul, .prose ol {
+  @apply mb-6 pl-6;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+.prose ol {
+  list-style-type: decimal;
+}
+
+.prose ul ul {
+  list-style-type: circle;
+}
+
+.prose ol ol {
+  list-style-type: lower-alpha;
+}
+
+.prose li {
+  @apply mb-2 text-base md:text-lg;
+  display: list-item;
+  color: inherit;
+}
+
+.prose li p {
+  @apply mb-2;
+}
+
+.prose li p:last-child {
+  @apply mb-0;
+}
+
+.prose blockquote {
+  @apply border-l-4 border-primary pl-6 italic bg-muted/30 py-4 my-6 rounded-r-lg;
+  color: inherit;
+}
+
+.prose img {
+  @apply rounded-lg mx-auto my-8 shadow-md;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose table {
+  @apply w-full border-collapse border border-border my-6 rounded-lg overflow-hidden;
+}
+
+.prose th, .prose td {
+  @apply border border-border px-4 py-3;
+}
+
+.prose th {
+  @apply bg-muted font-semibold;
+}
+
+.prose a {
+  @apply text-primary hover:text-primary/80 underline transition-colors;
+}
+
+.prose strong {
+  @apply font-bold;
+  color: inherit;
+}
+
+.prose em {
+  @apply italic;
+  color: inherit;
+}
+
+.prose code {
+  @apply bg-muted px-2 py-1 rounded text-sm font-mono;
+  color: inherit;
+}
+
+.prose pre {
+  @apply bg-muted p-4 rounded-lg overflow-x-auto my-6;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0;
+}
+

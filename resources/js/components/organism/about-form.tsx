@@ -17,8 +17,8 @@ interface AboutUsData {
     description: string
     vision: string
     mission: string
-    profile_image?: string
-    profile_video?: string
+    profile_images?: string[] | string // Support multiple images
+    profile_video_url?: string
     meta_title: string
     meta_description: string
     meta_keywords: string
@@ -34,8 +34,8 @@ export function AboutForm({ aboutUs }: AboutFormProps) {
         description: aboutUs.description || '',
         vision: aboutUs.vision || '',
         mission: aboutUs.mission || '',
-        profile_image: null as File | string | null, // Bisa file atau string path
-        profile_video: null as File | string | null, // Bisa file atau string path
+        profile_images: null as File[] | string[] | null, // Multiple images
+        profile_video_url: null as File | string | null, // Single video
         meta_title: aboutUs.meta_title || '',
         meta_description: aboutUs.meta_description || '',
         meta_keywords: aboutUs.meta_keywords || '',
@@ -43,8 +43,8 @@ export function AboutForm({ aboutUs }: AboutFormProps) {
     })
 
     const [previews, setPreviews] = useState({
-        image: aboutUs.profile_image || null,
-        video: aboutUs.profile_video || null,
+        images: aboutUs.profile_images || null,
+        video: aboutUs.profile_video_url || null,
     })
 
     // Handler untuk delete gambar dari rich text editor
@@ -60,24 +60,40 @@ export function AboutForm({ aboutUs }: AboutFormProps) {
         }).catch(console.error)
     }, [])
 
-    const handleProfileImageChange = (fileOrPath: File | string | null) => {
-        if (fileOrPath instanceof File) {
-            // File upload baru
-            setData('profile_image', fileOrPath)
+    const handleProfileImagesChange = (filesOrPaths: File[] | string[] | File | string | null) => {
+        if (filesOrPaths === null) {
+            // Reset/Delete
+            setData('profile_images', null)
+            setPreviews(prev => ({ ...prev, images: null }))
+        } else if (Array.isArray(filesOrPaths)) {
+            // Multiple files or paths
+            setData('profile_images', filesOrPaths as File[] | string[])
+            setPreviews(prev => ({ ...prev, images: filesOrPaths as string[] }))
+        }
+    }
 
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                setPreviews(prev => ({ ...prev, image: e.target?.result as string }))
-            }
-            reader.readAsDataURL(fileOrPath)
-        } else if (typeof fileOrPath === 'string') {
-            // Path dari media library
-            setData('profile_image', fileOrPath)
-            setPreviews(prev => ({ ...prev, image: `${fileOrPath}` }))
+    const handleProfileVideoChange = (filesOrPaths: File[] | string[] | File | string | null) => {
+        // Handle both single file/path and arrays (but we only use the first one for video)
+        let fileOrPath: File | string | null = null
+
+        if (filesOrPaths === null) {
+            fileOrPath = null
+        } else if (Array.isArray(filesOrPaths)) {
+            fileOrPath = filesOrPaths[0] as File | string
         } else {
-            // Reset/Delete - hanya clear preview dan data
-            setData('profile_image', null)
-            setPreviews(prev => ({ ...prev, image: null }))
+            fileOrPath = filesOrPaths
+        }
+
+        if (fileOrPath instanceof File) {
+            setData('profile_video_url', fileOrPath)
+            const url = URL.createObjectURL(fileOrPath)
+            setPreviews(prev => ({ ...prev, video: url }))
+        } else if (typeof fileOrPath === 'string') {
+            setData('profile_video_url', fileOrPath)
+            setPreviews(prev => ({ ...prev, video: fileOrPath }))
+        } else {
+            setData('profile_video_url', null)
+            setPreviews(prev => ({ ...prev, video: null }))
         }
     }
 
@@ -158,14 +174,24 @@ export function AboutForm({ aboutUs }: AboutFormProps) {
                 )}
             </div>
 
-            <div className="grid grid-cols-1">
+            <div className="grid grid-cols-1 gap-6">
                 <FileUpload
-                    label="Foto Profil Perusahaan"
+                    label="Foto Profil Perusahaan (Multiple)"
                     accept="image/*"
-                    value={previews.image}
-                    onChange={handleProfileImageChange}
+                    value={previews.images}
+                    onChange={handleProfileImagesChange}
                     type="image"
-                    error={errors.profile_image}
+                    error={errors.profile_images}
+                    multiple={true}
+                />
+
+                <FileUpload
+                    label="Video Profil Perusahaan"
+                    accept="video/*"
+                    value={previews.video}
+                    onChange={handleProfileVideoChange}
+                    type="video"
+                    error={errors.profile_video_url}
                 />
             </div>
 

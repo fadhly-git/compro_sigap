@@ -6,6 +6,15 @@ return [
     'phone' => env('APP_PHONE'),
     'whatsapp' => env('APP_WHATSAPP'),
     'contact_url' => env('APP_CONTACT_URL'),
+    'email' => env('APP_EMAIL'),
+
+    'operating_hours' => env('APP_OPERATING_HOURS'),
+
+    'social' => [
+        'facebook' => env('APP_SOCIAL_FACEBOOK'),
+        'instagram' => env('APP_SOCIAL_INSTAGRAM'),
+        'twitter' => env('APP_SOCIAL_TWITTER'),
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +79,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------

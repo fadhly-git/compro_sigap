@@ -18,9 +18,10 @@ import { index as services } from '@/routes/admin/management-content/services';
 import { index as message } from '@/routes/admin/message';
 import { index as setting } from '@/routes/admin/settings';
 import { index as media } from '@/routes/admin/media';
+import { index as certificates } from '@/routes/admin/certificates';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Briefcase, Building2, Cog, FactoryIcon, FolderCog, Images, LayoutGrid, MessageSquare, SendIcon } from 'lucide-react';
+import { Award, Briefcase, Building2, Cog, FactoryIcon, FolderCog, Images, LayoutGrid, MessageSquare, SendIcon } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -60,6 +61,11 @@ const mainNavItems: NavItem[] = [
         title: 'Pesan Kontak',
         href: message(),
         icon: SendIcon,
+    },
+    {
+        title: 'Sertifikat',
+        href: certificates(),
+        icon: Award,
     },
     {
         title: 'Pengaturan',

@@ -11,6 +11,8 @@ export interface GalleryCategory {
     is_active: boolean
     sort_order: number
     gallery_items_count?: number
+    active_items_count?: number
+    active_items?: GalleryItem[]
     created_at: string
     updated_at: string
 }

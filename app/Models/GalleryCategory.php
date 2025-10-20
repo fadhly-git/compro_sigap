@@ -37,6 +37,11 @@ class GalleryCategory extends Model
         return $this->hasMany(GalleryItem::class)->where('is_active', true)->orderBy('sort_order');
     }
 
+    public function activeItems(): HasMany
+    {
+        return $this->hasMany(GalleryItem::class)->where('is_active', true)->orderBy('sort_order');
+    }
+
     public static function boot()
     {
         parent::boot();
@@ -52,5 +57,10 @@ class GalleryCategory extends Model
                 $category->slug = Str::slug($category->name);
             }
         });
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(GalleryItem::class, 'gallery_category_id')->orderBy('sort_order');
     }
 }

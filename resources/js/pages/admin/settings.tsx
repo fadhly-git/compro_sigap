@@ -15,6 +15,8 @@ interface CompanySettings {
     company_email: string
     company_website: string
     company_description: string
+    tagline: string
+    short_description_below_tagline: string
     logo_path: string | null
     favicon_path: string | null
     social_media: {

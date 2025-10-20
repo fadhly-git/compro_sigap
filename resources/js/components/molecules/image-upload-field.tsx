@@ -1,137 +1,134 @@
 // resources/js/components/molecules/image-upload-field.tsx
 
-import { useState, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Upload, X, Image as ImageIcon, Loader2, FolderOpen } from 'lucide-react'
-import { toast } from 'sonner'
-import { MediaPickerModal } from './media-picker-modal'
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import {
+    FolderOpen,
+    Image as ImageIcon,
+    Loader2,
+    Upload,
+    X,
+} from 'lucide-react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { MediaPickerModal } from './media-picker-modal';
 
 interface ImageUploadFieldProps {
-    label: string
-    value: string | null
-    onChange: (path: string) => void
-    onDelete: () => void
-    required?: boolean
-    categoryId?: number
-    title?: string
-    context?: string
-    className?: string
+    label: string;
+    value: string | null;
+    onChange: (path: string | null) => void; // Bisa null untuk clear
+    required?: boolean;
+    categoryId?: number;
+    title?: string;
+    context?: string;
+    className?: string;
 }
 
 export function ImageUploadField({
     label,
     value,
     onChange,
-    onDelete,
     required = false,
     categoryId,
     title = '',
     context = 'gallery',
-    className = ''
+    className = '',
 }: ImageUploadFieldProps) {
-    const [uploading, setUploading] = useState(false)
-    const [preview, setPreview] = useState<string>(value ? `/storage/${value}` : '')
-    const [showMediaPicker, setShowMediaPicker] = useState(false)
-    const fileInputRef = useRef<HTMLInputElement>(null)
+    const [uploading, setUploading] = useState(false);
+    const [preview, setPreview] = useState<string>(
+        value ? `/storage/${value}` : '',
+    );
+    const [showMediaPicker, setShowMediaPicker] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0]
-        if (!file) return
+    const handleFileSelect = async (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
 
         // Validate file type
         if (!file.type.startsWith('image/')) {
-            toast.error('File harus berupa gambar')
-            return
+            toast.error('File harus berupa gambar');
+            return;
         }
 
         // Validate file size (5MB)
         if (file.size > 5 * 1024 * 1024) {
-            toast.error('Ukuran file maksimal 5MB')
-            return
+            toast.error('Ukuran file maksimal 5MB');
+            return;
         }
 
-        setUploading(true)
+        setUploading(true);
 
         try {
-            const formData = new FormData()
-            formData.append('file', file)
-            formData.append('context', context)
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('context', context);
 
             if (categoryId) {
-                formData.append('category_id', categoryId.toString())
+                formData.append('category_id', categoryId.toString());
             }
 
             if (title) {
-                formData.append('title', title)
+                formData.append('title', title);
             }
 
             const response = await fetch('/admin/media/upload', {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    'X-CSRF-TOKEN':
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content') || '',
                 },
-            })
+            });
 
-            const result = await response.json()
+            const result = await response.json();
 
             if (result.success) {
-                setPreview(result.url)
-                onChange(result.path) // Pass path, not URL
-                toast.success('Gambar berhasil diupload')
+                setPreview(result.url);
+                onChange(result.path); // Pass path, not URL
+                toast.success('Gambar berhasil diupload');
             } else {
-                toast.error(result.error || 'Upload gagal')
+                toast.error(result.error || 'Upload gagal');
             }
         } catch (error) {
-            console.error('Upload error:', error)
-            toast.error('Terjadi kesalahan saat upload')
+            console.error('Upload error:', error);
+            toast.error('Terjadi kesalahan saat upload');
         } finally {
-            setUploading(false)
+            setUploading(false);
             // Reset input
             if (fileInputRef.current) {
-                fileInputRef.current.value = ''
+                fileInputRef.current.value = '';
             }
         }
-    }
+    };
 
-    const handleRemove = async () => {
-        if (!value) return
-
-        try {
-            const response = await fetch('/admin/media/delete', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                },
-                body: JSON.stringify({ path: value }),
-            })
-
-            const result = await response.json()
-
-            if (result.success) {
-                setPreview('')
-                onDelete()
-                toast.success('Gambar berhasil dihapus')
-            } else {
-                toast.error('Gagal menghapus gambar')
-            }
-        } catch (error) {
-            console.error('Delete error:', error)
-            toast.error('Terjadi kesalahan saat menghapus gambar')
+    const handleRemove = () => {
+        // Hanya clear preview dan value, tidak ada API request
+        setPreview('');
+        onChange(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
         }
-    }
+    };
 
     const openFileDialog = () => {
-        fileInputRef.current?.click()
-    }
+        fileInputRef.current?.click();
+    };
 
-    const handleMediaSelect = (path: string, url: string) => {
-        setPreview(url)
-        onChange(path)
-        toast.success('Gambar berhasil dipilih dari library')
-    }
+    const handleMediaSelect = (paths: string | string[]) => {
+        // If multiple selection, pick the first one
+        const path = Array.isArray(paths) ? paths[0] : paths;
+        if (!path) return;
+        // Assume the URL is `/storage/${path}`
+        const url = `/storage/${path}`;
+        setPreview(url);
+        onChange(path);
+        toast.success('Gambar berhasil dipilih dari library');
+    };
 
     return (
         <div className={`space-y-4 ${className}`}>
@@ -140,25 +137,22 @@ export function ImageUploadField({
             </Label>
 
             {preview ? (
-                <div className="relative flex justify-center max-w-md items-center">
+                <div className="relative flex max-w-md items-center justify-center">
                     <img
                         src={preview}
                         alt="Preview"
-                        className="w-full h-48 object-cover rounded-lg border shadow-sm"
+                        className="h-48 w-full rounded-lg border object-cover shadow-sm"
                     />
                     <div className="absolute top-2 right-2 flex gap-2">
                         <Button
                             type="button"
                             size="sm"
                             variant="secondary"
-                            onClick={openFileDialog}
+                            onClick={() => setShowMediaPicker(true)}
                             disabled={uploading}
+                            title="Ganti gambar"
                         >
-                            {uploading ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <Upload className="h-4 w-4" />
-                            )}
+                            <Upload className="h-4 w-4" />
                         </Button>
                         <Button
                             type="button"
@@ -166,6 +160,7 @@ export function ImageUploadField({
                             size="sm"
                             onClick={handleRemove}
                             disabled={uploading}
+                            title="Hapus gambar"
                         >
                             <X className="h-4 w-4" />
                         </Button>
@@ -174,15 +169,17 @@ export function ImageUploadField({
             ) : (
                 <div className="space-y-3">
                     <div
-                        className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center cursor-pointer hover:border-muted-foreground/40 transition-colors"
+                        className="cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 p-8 text-center transition-colors hover:border-muted-foreground/40"
                         onClick={openFileDialog}
                     >
-                        <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground/50 mb-4" />
-                        <div className="space-y-2">
+                        <ImageIcon className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />
+                        <div className="space-y-2 wrap-anywhere">
                             <Button
+                                size={'sm'}
                                 type="button"
                                 variant="outline"
                                 disabled={uploading}
+                                className='text-wrap w-full'
                             >
                                 {uploading ? (
                                     <>
@@ -192,7 +189,7 @@ export function ImageUploadField({
                                 ) : (
                                     <>
                                         <Upload className="mr-2 h-4 w-4" />
-                                        Upload Gambar Baru
+                                        Upload Gambar
                                     </>
                                 )}
                             </Button>
@@ -242,5 +239,5 @@ export function ImageUploadField({
                 title="Pilih Gambar"
             />
         </div>
-    )
+    );
 }

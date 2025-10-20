@@ -45,9 +45,10 @@ interface MediaFile {
 interface MediaPickerModalProps {
     isOpen: boolean
     onClose: () => void
-    onSelect: (path: string, url: string) => void
+    onSelect: (paths: string | string[]) => void // Updated to support multiple
     fileType?: 'image' | 'video' | 'all'
     title?: string
+    multiple?: boolean // New prop
 }
 
 export function MediaPickerModal({
@@ -56,12 +57,14 @@ export function MediaPickerModal({
     onSelect,
     fileType = 'image',
     title = 'Pilih Media',
+    multiple = false,
 }: MediaPickerModalProps) {
     const [activeTab, setActiveTab] = useState<'library' | 'upload' | 'url'>('library')
     const [files, setFiles] = useState<MediaFile[]>([])
     const [loading, setLoading] = useState(false)
     const [uploading, setUploading] = useState(false)
     const [selectedFile, setSelectedFile] = useState<MediaFile | null>(null)
+    const [selectedFiles, setSelectedFiles] = useState<MediaFile[]>([])
 
     // Filters
     const [search, setSearch] = useState('')
@@ -113,13 +116,31 @@ export function MediaPickerModal({
     }, [isOpen, activeTab, fetchFiles])
 
     const handleFileSelect = (file: MediaFile) => {
-        setSelectedFile(file)
+        if (multiple) {
+            // Toggle selection for multiple mode
+            setSelectedFiles(prev => {
+                const isSelected = prev.some(f => f.id === file.id)
+                if (isSelected) {
+                    return prev.filter(f => f.id !== file.id)
+                } else {
+                    return [...prev, file]
+                }
+            })
+        } else {
+            // Single selection
+            setSelectedFile(file)
+        }
     }
 
     const handleConfirmSelect = () => {
-        if (selectedFile) {
-            const url = `/storage/${selectedFile.path}`
-            onSelect(selectedFile.path, url)
+        if (multiple && selectedFiles.length > 0) {
+            // Multiple selection
+            const paths = selectedFiles.map(f => f.path)
+            onSelect(paths)
+            handleClose()
+        } else if (selectedFile) {
+            // Single selection
+            onSelect(selectedFile.path)
             handleClose()
         }
     }
@@ -174,7 +195,7 @@ export function MediaPickerModal({
             const result = await response.json()
 
             if (result.success) {
-                onSelect(result.path, result.url)
+                onSelect(result.path)
                 toast.success('File berhasil diupload')
                 handleClose()
             } else {
@@ -198,13 +219,22 @@ export function MediaPickerModal({
             // Validate URL
             new URL(urlInput)
 
-            // Extract path from URL if it's a storage URL
+            // For video type, just pass the URL directly (YouTube, Vimeo, etc.)
+            if (fileType === 'video') {
+                onSelect(urlInput)
+                toast.success('URL video berhasil ditambahkan')
+                handleClose()
+                return
+            }
+
+            // For images, extract path from URL if it's a storage URL
             let path = urlInput
             if (urlInput.includes('/storage/')) {
                 path = urlInput.split('/storage/')[1]
             }
 
-            onSelect(path, urlInput)
+            onSelect(path)
+            toast.success('URL berhasil ditambahkan')
             handleClose()
         } catch {
             toast.error('URL tidak valid')
@@ -213,6 +243,7 @@ export function MediaPickerModal({
 
     const handleClose = () => {
         setSelectedFile(null)
+        setSelectedFiles([])
         setUploadFile(null)
         setUploadPreview('')
         setUrlInput('')
@@ -294,52 +325,64 @@ export function MediaPickerModal({
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
-                                    {files.map((file) => (
-                                        <div
-                                            key={file.id}
-                                            onClick={() => handleFileSelect(file)}
-                                            className={cn(
-                                                'relative group cursor-pointer rounded-lg border-2 overflow-hidden transition-all',
-                                                selectedFile?.id === file.id
-                                                    ? 'border-primary ring-2 ring-primary/20'
-                                                    : 'border-transparent hover:border-primary/50'
-                                            )}
-                                        >
-                                            <div className="aspect-square bg-muted">
-                                                {file.type === 'image' ? (
-                                                    <img
-                                                        src={`/storage/${file.path}`}
-                                                        alt={file.filename}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center">
-                                                        <ImageIcon className="w-12 h-12 text-muted-foreground" />
+                                    {files.map((file) => {
+                                        const isSelected = multiple
+                                            ? selectedFiles.some(f => f.id === file.id)
+                                            : selectedFile?.id === file.id
+
+                                        return (
+                                            <div
+                                                key={file.id}
+                                                onClick={() => handleFileSelect(file)}
+                                                className={cn(
+                                                    'relative group cursor-pointer rounded-lg border-2 overflow-hidden transition-all',
+                                                    isSelected
+                                                        ? 'border-primary ring-2 ring-primary/20'
+                                                        : 'border-transparent hover:border-primary/50'
+                                                )}
+                                            >
+                                                <div className="aspect-square bg-muted">
+                                                    {file.type === 'image' ? (
+                                                        <img
+                                                            src={`/storage/${file.path}`}
+                                                            alt={file.filename}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center">
+                                                            <ImageIcon className="w-12 h-12 text-muted-foreground" />
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {isSelected && (
+                                                    <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full p-1">
+                                                        <Check className="w-4 h-4" />
                                                     </div>
                                                 )}
-                                            </div>
 
-                                            {selectedFile?.id === file.id && (
-                                                <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full p-1">
-                                                    <Check className="w-4 h-4" />
-                                                </div>
-                                            )}
+                                                {multiple && isSelected && (
+                                                    <div className="absolute top-2 left-2 bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                                                        {selectedFiles.findIndex(f => f.id === file.id) + 1}
+                                                    </div>
+                                                )}
 
-                                            <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2 text-xs">
-                                                <p className="truncate font-medium">
-                                                    {file.filename}
-                                                </p>
-                                                <div className="flex items-center justify-between mt-1">
-                                                    <Badge variant="secondary" className="text-xs">
-                                                        {file.extension}
-                                                    </Badge>
-                                                    <span className="text-xs">
-                                                        {formatFileSize(file.size)}
-                                                    </span>
+                                                <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2 text-xs">
+                                                    <p className="truncate font-medium">
+                                                        {file.filename}
+                                                    </p>
+                                                    <div className="flex items-center justify-between mt-1">
+                                                        <Badge variant="secondary" className="text-xs">
+                                                            {file.extension}
+                                                        </Badge>
+                                                        <span className="text-xs">
+                                                            {formatFileSize(file.size)}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        )
+                                    })}
                                 </div>
                             )}
                         </div>
@@ -350,9 +393,11 @@ export function MediaPickerModal({
                             </Button>
                             <Button
                                 onClick={handleConfirmSelect}
-                                disabled={!selectedFile}
+                                disabled={multiple ? selectedFiles.length === 0 : !selectedFile}
                             >
-                                Pilih File
+                                {multiple
+                                    ? `Pilih ${selectedFiles.length} File${selectedFiles.length > 1 ? 's' : ''}`
+                                    : 'Pilih File'}
                             </Button>
                         </div>
                     </TabsContent>
@@ -445,17 +490,16 @@ export function MediaPickerModal({
                     <TabsContent value="url" className="flex-1 flex flex-col space-y-4 mt-0 overflow-hidden">
                         <div className="flex-1 overflow-y-auto space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="url-input">URL Gambar</Label>
+                                <Label htmlFor="url-input">URL Media</Label>
                                 <Input
                                     id="url-input"
                                     type="url"
-                                    placeholder="https://example.com/image.jpg"
+                                    placeholder="https://example.com/image.jpg atau https://youtube.com/watch?v=..."
                                     value={urlInput}
                                     onChange={(e) => setUrlInput(e.target.value)}
                                 />
                                 <p className="text-xs text-muted-foreground">
-                                    Masukkan URL lengkap gambar dari sumber eksternal atau
-                                    storage lokal
+                                    Masukkan URL gambar, video YouTube/Vimeo, atau dari storage lokal
                                 </p>
                             </div>
 
@@ -464,15 +508,21 @@ export function MediaPickerModal({
                                     <Label className="text-sm font-medium mb-2 block">
                                         Preview:
                                     </Label>
-                                    <img
-                                        src={urlInput}
-                                        alt="URL Preview"
-                                        className="w-full max-h-64 object-contain bg-muted rounded"
-                                        onError={(e) => {
-                                            e.currentTarget.src = ''
-                                            e.currentTarget.alt = 'Gagal memuat gambar'
-                                        }}
-                                    />
+                                    {(urlInput.includes('youtube.com') || urlInput.includes('youtu.be') || urlInput.includes('vimeo.com')) ? (
+                                        <div className="aspect-video w-full bg-muted rounded flex items-center justify-center">
+                                            <p className="text-sm text-muted-foreground">Video URL terdeteksi</p>
+                                        </div>
+                                    ) : (
+                                        <img
+                                            src={urlInput}
+                                            alt="URL Preview"
+                                            className="w-full max-h-64 object-contain bg-muted rounded"
+                                            onError={(e) => {
+                                                e.currentTarget.src = ''
+                                                e.currentTarget.alt = 'Gagal memuat preview'
+                                            }}
+                                        />
+                                    )}
                                 </div>
                             )}
                         </div>

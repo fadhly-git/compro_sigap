@@ -30,27 +30,6 @@ class Client extends Model
         'is_active' => 'boolean',
     ];
 
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($client) {
-            if (empty($client->slug)) {
-                $client->slug = Str::slug($client->name);
-            }
-
-            if (empty($client->sort_order)) {
-                $client->sort_order = static::max('sort_order') + 1;
-            }
-        });
-
-        static::updating(function ($client) {
-            if ($client->isDirty('name') && empty($client->getOriginal('slug'))) {
-                $client->slug = Str::slug($client->name);
-            }
-        });
-    }
-
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

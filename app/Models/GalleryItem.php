@@ -34,4 +34,19 @@ class GalleryItem extends Model
     {
         return $this->image_path ? asset('storage/' . $this->image_path) : '';
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sort_order', 'asc');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(GalleryCategory::class, 'gallery_category_id');
+    }
 }
