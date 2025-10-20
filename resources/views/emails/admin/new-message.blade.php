@@ -214,17 +214,6 @@
                         {{ $customerMessage->created_at->format('d M Y, H:i') }} WIB
                     </span>
                 </div>
-
-                @if($customerMessage->priority)
-                <div class="info-row">
-                    <span class="info-label">Prioritas:</span>
-                    <span class="info-value">
-                        <span class="priority-badge priority-{{ $customerMessage->priority }}">
-                            {{ ucfirst($customerMessage->priority) }}
-                        </span>
-                    </span>
-                </div>
-                @endif
             </div>
 
             <!-- Subject -->

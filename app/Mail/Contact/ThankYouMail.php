@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Mail;
+namespace App\Mail\Contact;
 
-use App\Models\Message;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use App\Models\Message;
 use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class NewMessageNotification extends Mailable
+class ThankYouMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -17,7 +18,7 @@ class NewMessageNotification extends Mailable
      * Create a new message instance.
      */
     public function __construct(
-        public Message $message
+        public Message $message,
     )
     {
         //
@@ -29,7 +30,13 @@ class NewMessageNotification extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Pesan Baru dari Website - ' . $this->message->subject,
+            subject: 'Terima kasih atas pesan Anda - SIGAP: ' . $this->message->subject,
+            replyTo: [
+                new Address(
+                    config('mail.from.address'),
+                    config('mail.from.name')
+                )
+            ],
         );
     }
 
@@ -39,10 +46,9 @@ class NewMessageNotification extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.admin.new-message',
+            view: 'emails.user.thank-you',
             with: [
                 'customerMessage' => $this->message,
-                'adminUrl' => route('admin.message.show', $this->message->id),
             ],
         );
     }
