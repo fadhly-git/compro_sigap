@@ -126,7 +126,7 @@ export interface AboutUs {
     description: string;
     vision: string;
     mission: string;
-    profile_images: string[] | null;
+    profile_images: string[] | string | null; // Can be JSON string or array
     profile_video_url: string | null;
     meta_title: string | null;
     meta_description: string | null;

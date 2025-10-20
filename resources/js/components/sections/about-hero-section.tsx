@@ -20,7 +20,7 @@ export function AboutHeroSection({ description }: AboutHeroSectionProps) {
                     Tentang Kami
                 </SectionTitle>
 
-                <div 
+                <div
                     className="text-base sm:text-lg text-[#126088] leading-relaxed mt-8 prose prose-sm sm:prose-lg max-w-none text-center"
                     dangerouslySetInnerHTML={{ __html: description }}
                 />

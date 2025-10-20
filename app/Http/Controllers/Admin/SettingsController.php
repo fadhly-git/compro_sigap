@@ -13,9 +13,7 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        Log::info("controller start");
         $settings = CompanySetting::getSettings();
-        Log::info("setting data" . json_encode($settings));
         return Inertia::render('admin/settings', [
             'settings' => $settings
         ]);

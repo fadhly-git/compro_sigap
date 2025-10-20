@@ -5,14 +5,27 @@ import { X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface ProfileImageGalleryProps {
-    images: string[];
+    images: string[] | string | null;
     className?: string;
 }
 
 export function ProfileImageGallery({ images, className = "" }: ProfileImageGalleryProps) {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    if (!images || images.length === 0) return null;
+    // Parse images if it's a JSON string
+    let imageArray: string[] = [];
+    if (typeof images === 'string') {
+        try {
+            imageArray = JSON.parse(images);
+        } catch (e) {
+            console.error('Failed to parse images JSON:', e);
+            return null;
+        }
+    } else if (Array.isArray(images)) {
+        imageArray = images;
+    }
+
+    if (!imageArray || imageArray.length === 0) return null;
 
     const getImageUrl = (path: string) => {
         if (path.startsWith('http://') || path.startsWith('https://')) {
@@ -24,7 +37,7 @@ export function ProfileImageGallery({ images, className = "" }: ProfileImageGall
     return (
         <>
             <div className={`grid grid-cols-2 sm:grid-cols-3 gap-4 ${className}`}>
-                {images.map((image, index) => (
+                {imageArray.map((image, index) => (
                     <div
                         key={index}
                         className="relative aspect-square overflow-hidden rounded-lg cursor-pointer group"

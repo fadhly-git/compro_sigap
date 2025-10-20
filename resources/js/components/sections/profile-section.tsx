@@ -5,12 +5,18 @@ import { ProfileImageGallery } from "@/components/molecules/profile-image-galler
 import { VideoPlayer } from "@/components/atoms/video-player";
 
 interface ProfileSectionProps {
-    images?: string[];
+    images?: string[] | string | null;
     videoUrl?: string;
 }
 
 export function ProfileSection({ images, videoUrl }: ProfileSectionProps) {
-    if (!images?.length && !videoUrl) return null;
+    // Check if images exist (handle both array and JSON string)
+    const hasImages = images && (
+        (typeof images === 'string' && images.length > 0) ||
+        (Array.isArray(images) && images.length > 0)
+    );
+
+    if (!hasImages && !videoUrl) return null;
 
     return (
         <section className="py-16 sm:py-20 lg:py-24 px-4 bg-gradient-to-br from-gray-50 to-white">

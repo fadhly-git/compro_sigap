@@ -119,7 +119,12 @@ export function ImageUploadField({
         fileInputRef.current?.click();
     };
 
-    const handleMediaSelect = (path: string, url: string) => {
+    const handleMediaSelect = (paths: string | string[]) => {
+        // If multiple selection, pick the first one
+        const path = Array.isArray(paths) ? paths[0] : paths;
+        if (!path) return;
+        // Assume the URL is `/storage/${path}`
+        const url = `/storage/${path}`;
         setPreview(url);
         onChange(path);
         toast.success('Gambar berhasil dipilih dari library');

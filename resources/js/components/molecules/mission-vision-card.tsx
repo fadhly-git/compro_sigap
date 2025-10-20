@@ -12,8 +12,8 @@ interface MissionVisionCardProps {
 
 export function MissionVisionCard({ title, content, type, className = "" }: MissionVisionCardProps) {
     const Icon: LucideIcon = type === "vision" ? Eye : Target;
-    const gradientClass = type === "vision" 
-        ? "from-[#21b6fc] to-[#1e94d2]" 
+    const gradientClass = type === "vision"
+        ? "from-[#21b6fc] to-[#1e94d2]"
         : "from-[#1e94d2] to-[#126088]";
 
     return (
@@ -27,7 +27,7 @@ export function MissionVisionCard({ title, content, type, className = "" }: Miss
                 </div>
             </CardHeader>
             <CardContent>
-                <div 
+                <div
                     className="text-sm sm:text-base text-[#126088] leading-relaxed prose prose-sm sm:prose-base max-w-none"
                     dangerouslySetInnerHTML={{ __html: content }}
                 />

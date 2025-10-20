@@ -7,17 +7,18 @@ import { MissionVisionSection } from "@/components/sections/mission-vision-secti
 import { ProfileSection } from "@/components/sections/profile-section";
 import { StatsSection } from "@/components/sections/stats-section";
 import { CertificatesCarousel } from "@/components/organism/certificates-carousel";
-import { AboutUs, Certificate, CompanySetting } from "@/types";
+import { AboutUs, Certificate, CompanySetting, Service } from "@/types";
 
 interface AboutPageProps {
     companySettings: CompanySetting;
+    featuredServices: Service[];
     about: AboutUs;
     certificates: Certificate[];
 }
 
-export default function About({ companySettings, about, certificates }: AboutPageProps) {
+export default function About({ companySettings, about, certificates, featuredServices }: AboutPageProps) {
     return (
-        <MainLayout settings={companySettings} services={[]}>
+        <MainLayout settings={companySettings} services={featuredServices}>
             <Head>
                 <title>{about?.meta_title || `Tentang Kami - ${companySettings.company_name}`}</title>
                 <meta name="description" content={about?.meta_description || companySettings.company_description} />
@@ -30,17 +31,17 @@ export default function About({ companySettings, about, certificates }: AboutPag
             )}
 
             {/* Mission & Vision Section */}
-            <MissionVisionSection 
-                vision={about?.vision} 
-                mission={about?.mission} 
+            <MissionVisionSection
+                vision={about?.vision}
+                mission={about?.mission}
             />
 
             {/* Stats Section */}
             <StatsSection />
 
             {/* Profile Images & Video Section */}
-            <ProfileSection 
-                images={about?.profile_images || []} 
+            <ProfileSection
+                images={about?.profile_images || []}
                 videoUrl={about?.profile_video_url || undefined}
             />
 
