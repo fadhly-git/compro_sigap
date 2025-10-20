@@ -62,7 +62,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 </div>
                                 <InputPassword
                                     id="password"
-                                    type="password"
                                     name="password"
                                     required
                                     tabIndex={2}
