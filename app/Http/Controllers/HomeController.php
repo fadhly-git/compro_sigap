@@ -33,6 +33,10 @@ class HomeController extends Controller
             ->take(12)
             ->get(['id', 'name', 'logo_path', 'sector']);
 
+        // client count
+        $clientCount = Client::active()
+            ->count();
+
         // Mini Gallery (latest 6 items from "Kegiatan" category or any active category)
         $miniGallery = GalleryItem::active()
             ->ordered()
@@ -51,6 +55,7 @@ class HomeController extends Controller
         return Inertia::render('home', [
             'companySettings' => $companySettings,
             'featuredServices' => $featuredServices,
+            'clientCount'=> $clientCount,
             'clientLogos' => $clientLogos,
             'miniGallery' => $miniGallery,
             'aboutSnippet' => $aboutSnippet,
