@@ -25,7 +25,6 @@ export function MainLayout({
     const pageTitle = title
         ? `${title} - ${settings.company_name}`
         : settings.meta_title || settings.company_name;
-
     const pageDescription = description || settings.meta_description || settings.company_description;
 
     return (
@@ -48,7 +47,7 @@ export function MainLayout({
                     {children}
                 </main>
 
-                <GlobalFooter settings={settings} />
+                <GlobalFooter settings={settings} services={services} />
             </div>
         </TooltipProvider>
     );

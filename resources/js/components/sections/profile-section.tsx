@@ -29,7 +29,7 @@ export function ProfileSection({ images, videoUrl }: ProfileSectionProps) {
 
                 <div className="mt-12 space-y-12">
                     {videoUrl && (
-                        <div className="max-w-4xl mx-auto">
+                        <div className="max-w-7xl mx-auto">
                             <VideoPlayer videoUrl={videoUrl} />
                         </div>
                     )}

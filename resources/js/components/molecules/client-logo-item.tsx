@@ -15,7 +15,7 @@ export function ClientLogoItem({ client }: ClientLogoItemProps) {
                 <img
                     src={getImageUrl(client.logo_path)}
                     alt={client.name}
-                    className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all"
+                    className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all rounded-md"
                 />
             ) : (
                 <div className="flex flex-col items-center gap-2 text-[#126088]/60">

@@ -105,7 +105,8 @@
         .action-button {
             display: inline-block;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white;
+            text-shadow: none;
+            color: #ffffff;
             text-decoration: none;
             padding: 14px 28px;
             border-radius: 8px;

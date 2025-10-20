@@ -25,9 +25,27 @@ class SettingsController extends Controller
 
         $data = $request->all();
 
-        // Handle social media as JSON
+        // Normalize social_media: accept array or JSON string, ensure single JSON encoding in DB
         if (isset($data['social_media'])) {
-            $data['social_media'] = json_encode($data['social_media']);
+            // If it's already an array (frontend sends object), encode once
+            if (is_array($data['social_media'])) {
+                $data['social_media'] = json_encode($data['social_media']);
+            } elseif (is_string($data['social_media'])) {
+                // If it's a string, attempt to decode to detect double-encoding
+                $decoded = json_decode($data['social_media'], true);
+
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    // String was valid JSON -> normalize to a single encoded JSON string
+                    $data['social_media'] = json_encode($decoded);
+                } else {
+                    // Try a second decode in case of double-encoded value
+                    $decodedOnce = json_decode($decoded, true);
+                    if (json_last_error() === JSON_ERROR_NONE && is_array($decodedOnce)) {
+                        $data['social_media'] = json_encode($decodedOnce);
+                    }
+                    // Otherwise leave as-is (best-effort)
+                }
+            }
         }
 
         $settings->fill($data);

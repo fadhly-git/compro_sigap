@@ -103,7 +103,7 @@
         .btn {
             display: inline-block;
             background-color: #007bff;
-            color: white;
+            color: #ffffff;
             padding: 12px 24px;
             text-decoration: none;
             border-radius: 6px;

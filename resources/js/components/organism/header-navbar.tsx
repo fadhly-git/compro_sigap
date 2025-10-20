@@ -1,6 +1,6 @@
 // resources/js/components/organisms/header-navbar.tsx
 
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ interface HeaderNavbarProps {
 }
 
 export function HeaderNavbar({ settings, services = [] }: HeaderNavbarProps) {
+    const page = usePage();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
 
@@ -53,7 +54,7 @@ export function HeaderNavbar({ settings, services = [] }: HeaderNavbarProps) {
                     : "absolute bg-transparent"
             )}
         >
-            <div className="container max-w-7xl mx-auto">
+            <div className="container max-w-7xl mx-auto w-full">
                 <nav className="flex items-center justify-between">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
@@ -66,7 +67,7 @@ export function HeaderNavbar({ settings, services = [] }: HeaderNavbarProps) {
                             <h1 className="text-lg font-bold text-[#00334e] leading-tight">
                                 {settings.company_name}
                             </h1>
-                            <p className="text-xs text-[#126088]">Your Tech Partner</p>
+                            <p className="text-xs text-[#126088]">{settings.tagline}</p>
                         </div>
                     </Link>
 
@@ -75,20 +76,22 @@ export function HeaderNavbar({ settings, services = [] }: HeaderNavbarProps) {
                         <NavigationMenuList>
                             <NavigationMenuItem>
                                 <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
-                                    Beranda
+                                    <span className={page.url === '/' ? 'text-accent hover:text-accent-foreground' : ''}>Beranda</span>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
 
                             <NavigationMenuItem>
                                 <NavigationMenuLink href="/about" className={navigationMenuTriggerStyle()}>
-                                    Tentang Kami
+                                    <span className={page.url.startsWith('/about') ? 'text-accent' : ''}>Tentang Kami</span>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
 
                             <NavigationMenuItem>
-                                <NavigationMenuTrigger>Layanan</NavigationMenuTrigger>
+                                <NavigationMenuTrigger>
+                                    <span className={page.url.startsWith('/services') ? 'text-accent' : ''}>Layanan</span>
+                                </NavigationMenuTrigger>
                                 <NavigationMenuContent>
-                                    <div className="w-[500px] p-4">
+                                    <div className="w-[600px] p-4">
                                         <h2 className="text-lg font-semibold text-[#00334e] mb-4 px-2">
                                             Layanan Kami
                                         </h2>
@@ -111,7 +114,7 @@ export function HeaderNavbar({ settings, services = [] }: HeaderNavbarProps) {
                                         <div className="mt-4 pt-4 border-t">
                                             <NavigationMenuLink
                                                 href="/services"
-                                                className="text-[#21b6fc] hover:text-[#1e94d2] font-semibold text-sm flex items-center gap-2"
+                                                className="text-[#21b6fc] hover:text-[#1b3848] font-semibold text-sm flex items-center gap-2"
                                             >
                                                 Lihat Semua Layanan →
                                             </NavigationMenuLink>
@@ -122,19 +125,19 @@ export function HeaderNavbar({ settings, services = [] }: HeaderNavbarProps) {
 
                             <NavigationMenuItem>
                                 <NavigationMenuLink href="/gallery" className={navigationMenuTriggerStyle()}>
-                                    Galeri
+                                    <span className={page.url.startsWith('/gallery') ? 'text-accent' : ''}>Galeri</span>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
 
                             <NavigationMenuItem>
                                 <NavigationMenuLink href="/clients" className={navigationMenuTriggerStyle()}>
-                                    Klien
+                                    <span className={page.url.startsWith('/clients') ? 'text-accent' : ''}>Klien</span>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
 
                             <NavigationMenuItem>
                                 <NavigationMenuLink href="/contact" className={navigationMenuTriggerStyle()}>
-                                    Kontak
+                                    <span className={page.url.startsWith('/contact') ? 'text-accent' : ''}>Kontak</span>
                                 </NavigationMenuLink>
                             </NavigationMenuItem>
                         </NavigationMenuList>
@@ -175,7 +178,7 @@ export function HeaderNavbar({ settings, services = [] }: HeaderNavbarProps) {
                                 <Menu className="h-5 w-5" />
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                        <SheetContent side="right" className="w-[300px] sm:w-[400px] mx-auto">
                             <SheetHeader>
                                 <SheetTitle>
                                     <Link href="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
@@ -189,7 +192,7 @@ export function HeaderNavbar({ settings, services = [] }: HeaderNavbarProps) {
                                 </SheetTitle>
                             </SheetHeader>
 
-                            <div className="flex flex-col gap-4 mt-8">
+                            <div className="flex flex-col gap-4 mt-8 p-4">
                                 <Link
                                     href="/"
                                     className="text-lg font-medium hover:text-[#21b6fc] transition-colors py-2"

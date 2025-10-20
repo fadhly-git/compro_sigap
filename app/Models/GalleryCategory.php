@@ -37,6 +37,11 @@ class GalleryCategory extends Model
         return $this->hasMany(GalleryItem::class)->where('is_active', true)->orderBy('sort_order');
     }
 
+    public function activeItems(): HasMany
+    {
+        return $this->hasMany(GalleryItem::class)->where('is_active', true)->orderBy('sort_order');
+    }
+
     public static function boot()
     {
         parent::boot();

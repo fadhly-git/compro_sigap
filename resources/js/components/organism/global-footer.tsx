@@ -4,13 +4,14 @@ import { Link } from "@inertiajs/react";
 import { Mail, MapPin, Phone, Facebook, Instagram, Linkedin, Twitter, ArrowUpRight } from "lucide-react";
 import { AppLogo } from "@/components/atoms/app-logo";
 import { SocialMediaLink } from "@/components/molecules/social-media-link";
-import { CompanySetting } from "@/types";
+import { CompanySetting, Service } from "@/types";
 
 interface GlobalFooterProps {
     settings: CompanySetting;
+    services?: Service[];
 }
 
-export function GlobalFooter({ settings }: GlobalFooterProps) {
+export function GlobalFooter({ settings, services = [] }: GlobalFooterProps) {
     const currentYear = new Date().getFullYear();
     const socialMedia = settings.social_media || {};
 
@@ -46,7 +47,7 @@ export function GlobalFooter({ settings }: GlobalFooterProps) {
                                 <h3 className="text-xl font-bold text-white">
                                     {settings.company_name}
                                 </h3>
-                                <p className="text-xs text-white/70">Your Tech Partner</p>
+                                <p className="text-xs text-white/70">{settings.tagline}</p>
                             </div>
                         </div>
                         <p className="text-sm text-white/80 leading-relaxed mb-6">
@@ -112,42 +113,58 @@ export function GlobalFooter({ settings }: GlobalFooterProps) {
                     <div>
                         <h4 className="text-lg font-bold text-white mb-6">Layanan Kami</h4>
                         <ul className="space-y-3">
-                            <li>
-                                <Link
-                                    href="/services"
-                                    className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors flex items-center gap-2 group"
-                                >
-                                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    Pengembangan Website
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/services"
-                                    className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors flex items-center gap-2 group"
-                                >
-                                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    Aplikasi Mobile
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/services"
-                                    className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors flex items-center gap-2 group"
-                                >
-                                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    UI/UX Design
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/services"
-                                    className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors flex items-center gap-2 group"
-                                >
-                                    <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    IT Consulting
-                                </Link>
-                            </li>
+                            {services.length > 0 ? (
+                                services.slice(0, 4).map((service) => (
+                                    <li key={service.id}>
+                                        <Link
+                                            href={`/services/${service.slug}`}
+                                            className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors flex items-center gap-2 group"
+                                        >
+                                            <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            {service.title}
+                                        </Link>
+                                    </li>
+                                ))
+                            ) : (
+                                <>
+                                    <li>
+                                        <Link
+                                            href="/services"
+                                            className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors flex items-center gap-2 group"
+                                        >
+                                            <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            Pengembangan Website
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link
+                                            href="/services"
+                                            className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors flex items-center gap-2 group"
+                                        >
+                                            <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            Aplikasi Mobile
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link
+                                            href="/services"
+                                            className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors flex items-center gap-2 group"
+                                        >
+                                            <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            UI/UX Design
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link
+                                            href="/services"
+                                            className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors flex items-center gap-2 group"
+                                        >
+                                            <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                            IT Consulting
+                                        </Link>
+                                    </li>
+                                </>
+                            )}
                         </ul>
                     </div>
 
@@ -196,20 +213,6 @@ export function GlobalFooter({ settings }: GlobalFooterProps) {
                         <span className="font-semibold text-white">{settings.company_name}</span>.
                         All rights reserved.
                     </p>
-                    <div className="flex gap-6">
-                        <Link
-                            href="/privacy"
-                            className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors"
-                        >
-                            Privacy Policy
-                        </Link>
-                        <Link
-                            href="/terms"
-                            className="text-sm text-white/80 hover:text-[#21b6fc] transition-colors"
-                        >
-                            Terms of Service
-                        </Link>
-                    </div>
                 </div>
             </div>
         </footer>

@@ -69,6 +69,7 @@ export interface CompanySetting {
     meta_keywords: string | null;
     tagline: string;
     short_description_below_tagline: string;
+    office_hours?: string | null;
 }
 
 export interface Service {
@@ -96,6 +97,9 @@ export interface Client {
     website_url: string | null;
     is_active: boolean;
     sort_order: number;
+    meta_title?: string | null;
+    meta_description?: string | null;
+    meta_keywords?: string | null;
 }
 
 export interface GalleryItem {

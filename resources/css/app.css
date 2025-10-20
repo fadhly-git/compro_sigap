@@ -391,8 +391,27 @@ html {
   animation-delay: 0.2s;
 }
 
+/* Infinite scroll animation for carousel */
+@keyframes infinite-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.animate-infinite-scroll {
+  animation: infinite-scroll 40s linear infinite;
+}
+
+/* Faster animation for fewer items */
+.animate-infinite-scroll-fast {
+  animation: infinite-scroll 25s linear infinite;
+}
+
 .prose {
-  @apply text-foreground leading-relaxed max-w-none text-justify; /* Hapus text-pink-400, ganti dengan text-foreground */
+  @apply text-foreground leading-relaxed max-w-7xl w-full text-justify;
   color: inherit; /* Pastikan warna mengikuti theme */
 }
 
@@ -509,3 +528,4 @@ html {
 .prose pre code {
   @apply bg-transparent p-0;
 }
+

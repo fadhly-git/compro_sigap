@@ -26,7 +26,7 @@ export function HeroSection({ settings, tagline, shortDescription }: HeroSection
             <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-[#00a3cc]/10 rounded-full blur-2xl" />
 
             {/* Main Content */}
-            <div className="relative flex flex-col items-center max-w-4xl w-full text-center space-y-8 z-10">
+            <div className="relative flex flex-col items-center max-w-4xl w-full text-center space-y-8 z-10 container">
                 <div className="animate-fade-in-down p-6 bg-white/50 backdrop-blur-sm rounded-2xl shadow-xl">
                     <AppLogo
                         logoPath={settings.logo_path}
