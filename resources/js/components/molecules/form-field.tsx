@@ -8,11 +8,13 @@ interface FormFieldProps {
     value: string
     onChange: (value: string) => void
     type?: 'input' | 'textarea' | 'number'
+    inputType?: string
     placeholder?: string
     required?: boolean
     className?: string
     error?: string
     maxLength?: number
+    readonly?: boolean
 }
 
 export function FormField({
@@ -24,8 +26,10 @@ export function FormField({
     placeholder,
     required = false,
     className = '',
+    inputType,
     error,
-    maxLength
+    maxLength,
+    readonly = false
 }: FormFieldProps) {
     return (
         <div className={`space-y-2 ${className}`}>
@@ -57,10 +61,12 @@ export function FormField({
                 <Input
                     id={name}
                     name={name}
+                    type={inputType || 'text'}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
                     placeholder={placeholder}
                     maxLength={maxLength}
+                    readOnly={readonly}
                 />
             )}
             {maxLength && (

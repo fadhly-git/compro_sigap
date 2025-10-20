@@ -68,13 +68,8 @@ export function ServiceForm({ service, isEditing = false }: ServiceFormProps) {
         }
     }
 
-    const handleImageDelete = () => {
-        setData('image', null)
-    }
-
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault()
-        console.log(data)
 
         if (!data.title.trim()) {
             toast.error('Judul layanan harus diisi')
@@ -136,9 +131,8 @@ export function ServiceForm({ service, isEditing = false }: ServiceFormProps) {
                             <ServiceFormFields
                                 formData={data}
                                 onFieldChange={handleFieldChange}
-                                onImageDelete={handleImageDelete}
                                 errors={errors}
-                                existingImageUrl={service?.image ? `/storage/${service.image}` : null}
+                                existingImageUrl={service?.image ? `${service.image}` : null}
                             />
                         </TabsContent>
 

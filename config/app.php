@@ -1,6 +1,11 @@
+
 <?php
 
 return [
+
+    'phone' => env('APP_PHONE'),
+    'whatsapp' => env('APP_WHATSAPP'),
+    'contact_url' => env('APP_CONTACT_URL'),
 
     /*
     |--------------------------------------------------------------------------

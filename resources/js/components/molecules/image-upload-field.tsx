@@ -1,182 +1,264 @@
 // resources/js/components/molecules/image-upload-field.tsx
 
-import { useState, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Label } from '@/components/ui/label'
-import { Upload, X, Eye, FileImage, Loader2 } from 'lucide-react'
-import { MediaPreviewModal } from '@/components/molecules/media-preview-modal'
-import { toast } from 'sonner'
-import uploadRoute from '@/routes/admin/media'
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import {
+    FolderOpen,
+    Image as ImageIcon,
+    Loader2,
+    Upload,
+    X,
+} from 'lucide-react';
+import { useRef, useState } from 'react';
+import { toast } from 'sonner';
+import { MediaPickerModal } from './media-picker-modal';
 
 interface ImageUploadFieldProps {
-  label: string
-  value: string | null
-  onChange: (path: string) => void
-  onDelete: () => void
-  error?: string
-  className?: string
-  required?: boolean
+    label: string;
+    value: string | null;
+    onChange: (path: string) => void;
+    onDelete: () => void;
+    required?: boolean;
+    categoryId?: number;
+    title?: string;
+    context?: string;
+    className?: string;
 }
 
 export function ImageUploadField({
-  label,
-  value,
-  onChange,
-  onDelete,
-  error,
-  className = '',
-  required = false
+    label,
+    value,
+    onChange,
+    onDelete,
+    required = false,
+    categoryId,
+    title = '',
+    context = 'gallery',
+    className = '',
 }: ImageUploadFieldProps) {
-  const [previewModal, setPreviewModal] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+    const [uploading, setUploading] = useState(false);
+    const [preview, setPreview] = useState<string>(
+        value ? `/storage/${value}` : '',
+    );
+    const [showMediaPicker, setShowMediaPicker] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const handleFileSelect = async (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      toast.error('File harus berupa gambar')
-      return
-    }
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            toast.error('File harus berupa gambar');
+            return;
+        }
 
-    const maxSize = 5 * 1024 * 1024 // 5MB
-    if (file.size > maxSize) {
-      toast.error('Ukuran file terlalu besar. Maksimal 5MB')
-      return
-    }
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error('Ukuran file maksimal 5MB');
+            return;
+        }
 
-    setIsUploading(true)
+        setUploading(true);
 
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('context', context);
 
-      const response = await fetch(uploadRoute.upload.url(), {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-        },
-      })
+            if (categoryId) {
+                formData.append('category_id', categoryId.toString());
+            }
 
-      const result = await response.json()
+            if (title) {
+                formData.append('title', title);
+            }
 
-      if (result.success) {
-        onChange(result.url)
-        toast.success('Gambar berhasil diupload')
-      } else {
-        toast.error(result.error || 'Gagal mengupload gambar')
-      }
-    } catch (error) {
-      console.error('Upload error:', error)
-      toast.error('Terjadi kesalahan saat mengupload')
-    } finally {
-      setIsUploading(false)
-    }
-  }
+            const response = await fetch('/admin/media/upload', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRF-TOKEN':
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content') || '',
+                },
+            });
 
-  const handleClick = () => {
-    fileInputRef.current?.click()
-  }
+            const result = await response.json();
 
-  const handleDelete = () => {
-    onDelete()
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ''
-    }
-  }
+            if (result.success) {
+                setPreview(result.url);
+                onChange(result.path); // Pass path, not URL
+                toast.success('Gambar berhasil diupload');
+            } else {
+                toast.error(result.error || 'Upload gagal');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            toast.error('Terjadi kesalahan saat upload');
+        } finally {
+            setUploading(false);
+            // Reset input
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        }
+    };
 
-  return (
-    <div className={`space-y-2 ${className}`}>
-      <Label>
-        {label}
-        {required && <span className="text-destructive ml-1">*</span>}
-      </Label>
+    const handleRemove = async () => {
+        if (!value) return;
 
-      <div className="relative">
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="hidden"
-          disabled={isUploading}
-        />
+        try {
+            const response = await fetch('/admin/media/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN':
+                        document
+                            .querySelector('meta[name="csrf-token"]')
+                            ?.getAttribute('content') || '',
+                },
+                body: JSON.stringify({ path: value }),
+            });
 
-        {value ? (
-          <div className="relative group border-2 border-dashed rounded-lg p-4 bg-secondary/50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <FileImage className="w-8 h-8 text-blue-500" />
-                <div>
-                  <p className="text-sm font-medium">Gambar berhasil dipilih</p>
-                  <p className="text-xs text-muted-foreground">Klik preview untuk melihat</p>
+            const result = await response.json();
+
+            if (result.success) {
+                setPreview('');
+                onDelete();
+                toast.success('Gambar berhasil dihapus');
+            } else {
+                toast.error('Gagal menghapus gambar');
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            toast.error('Terjadi kesalahan saat menghapus gambar');
+        }
+    };
+
+    const openFileDialog = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleMediaSelect = (path: string, url: string) => {
+        setPreview(url);
+        onChange(path);
+        toast.success('Gambar berhasil dipilih dari library');
+    };
+
+    return (
+        <div className={`space-y-4 ${className}`}>
+            <Label>
+                {label} {required && <span className="text-red-500">*</span>}
+            </Label>
+
+            {preview ? (
+                <div className="relative flex max-w-md items-center justify-center">
+                    <img
+                        src={preview}
+                        alt="Preview"
+                        className="h-48 w-full rounded-lg border object-cover shadow-sm"
+                    />
+                    <div className="absolute top-2 right-2 flex gap-2">
+                        <Button
+                            type="button"
+                            size="sm"
+                            variant="secondary"
+                            onClick={openFileDialog}
+                            disabled={uploading}
+                        >
+                            {uploading ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                            ) : (
+                                <Upload className="h-4 w-4" />
+                            )}
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="destructive"
+                            size="sm"
+                            onClick={handleRemove}
+                            disabled={uploading}
+                        >
+                            <X className="h-4 w-4" />
+                        </Button>
+                    </div>
                 </div>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setPreviewModal(true)}
-                >
-                  <Eye className="w-4 h-4" />
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleClick}
-                  disabled={isUploading}
-                >
-                  {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Ganti'}
-                </Button>
-                <Button
-                  type="button"
-                  variant="destructive"
-                  size="sm"
-                  onClick={handleDelete}
-                  disabled={isUploading}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div
-            onClick={handleClick}
-            className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer hover:border-primary hover:bg-secondary/50 transition-colors ${
-              isUploading ? 'pointer-events-none opacity-50' : ''
-            }`}
-          >
-            {isUploading ? (
-              <div className="flex flex-col items-center">
-                <Loader2 className="w-12 h-12 mx-auto text-muted-foreground mb-4 animate-spin" />
-                <p className="text-sm font-medium mb-1">Mengupload...</p>
-              </div>
             ) : (
-              <>
-                <Upload className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-sm font-medium mb-1">Klik untuk upload gambar</p>
-                <p className="text-xs text-muted-foreground">PNG, JPG, JPEG hingga 5MB</p>
-              </>
+                <div className="space-y-3">
+                    <div
+                        className="cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 p-8 text-center transition-colors hover:border-muted-foreground/40"
+                        onClick={openFileDialog}
+                    >
+                        <ImageIcon className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />
+                        <div className="space-y-2 wrap-anywhere">
+                            <Button
+                                size={'sm'}
+                                type="button"
+                                variant="outline"
+                                disabled={uploading}
+                                className='text-wrap w-full'
+                            >
+                                {uploading ? (
+                                    <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Uploading...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Upload className="mr-2 h-4 w-4" />
+                                        Upload Gambar
+                                    </>
+                                )}
+                            </Button>
+                            <p className="text-sm text-muted-foreground">
+                                PNG, JPG, GIF, WEBP maksimal 5MB
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-background px-2 text-muted-foreground">
+                                Atau
+                            </span>
+                        </div>
+                    </div>
+
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full"
+                        onClick={() => setShowMediaPicker(true)}
+                    >
+                        <FolderOpen className="mr-2 h-4 w-4" />
+                        Pilih dari Media Library
+                    </Button>
+                </div>
             )}
-          </div>
-        )}
-      </div>
 
-      {error && <p className="text-sm text-destructive">{error}</p>}
+            <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                disabled={uploading}
+                className="hidden"
+            />
 
-      <MediaPreviewModal
-        isOpen={previewModal}
-        onClose={() => setPreviewModal(false)}
-        mediaUrl={value}
-        mediaType="image"
-        title={label}
-      />
-    </div>
-  )
+            <MediaPickerModal
+                isOpen={showMediaPicker}
+                onClose={() => setShowMediaPicker(false)}
+                onSelect={handleMediaSelect}
+                fileType="image"
+                title="Pilih Gambar"
+            />
+        </div>
+    );
 }

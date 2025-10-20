@@ -58,24 +58,34 @@ class AboutController extends Controller
             $data['slug'] = \Str::slug($data['slug']);
         }
 
-        // Handle profile image upload
+        // Handle profile image: bisa dari upload file baru atau path dari media library
         if ($request->hasFile('profile_image')) {
             // Delete old image if exists
             if ($aboutUs->profile_image) {
                 Storage::disk('public')->delete($aboutUs->profile_image);
             }
-
             $data['profile_images'] = json_encode([$request->file('profile_image')->store('about-us', 'public')]);
+        } elseif (is_string($request->input('profile_image')) && !empty($request->input('profile_image'))) {
+            // Path dari media library
+            if ($aboutUs->profile_image && $aboutUs->profile_image !== $request->input('profile_image')) {
+                Storage::disk('public')->delete($aboutUs->profile_image);
+            }
+            $data['profile_images'] = json_encode([$request->input('profile_image')]);
         }
 
-        // Handle profile video upload
+        // Handle profile video: bisa dari upload file baru atau path dari media library
         if ($request->hasFile('profile_video')) {
             // Delete old video if exists
             if ($aboutUs->profile_video) {
                 Storage::disk('public')->delete($aboutUs->profile_video);
             }
-
             $data['profile_video'] = json_encode($request->file('profile_video')->store('about-us', 'public'));
+        } elseif (is_string($request->input('profile_video')) && !empty($request->input('profile_video'))) {
+            // Path dari media library
+            if ($aboutUs->profile_video && $aboutUs->profile_video !== $request->input('profile_video')) {
+                Storage::disk('public')->delete($aboutUs->profile_video);
+            }
+            $data['profile_video'] = json_encode($request->input('profile_video'));
         }
 
         $aboutUs->fill($data);
