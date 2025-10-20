@@ -1,36 +1,45 @@
 // resources/js/components/organisms/certificates-carousel.tsx
 
+import Slider from 'react-infinite-logo-slider';
 import { SectionTitle } from "@/components/atoms/section-title-guest";
-import { CertificateBadge } from "@/components/molecules/certificate-badge";
 import { Certificate } from "@/types";
+import { getImageUrl } from "@/utils/image-helper";
+import { Award } from "lucide-react";
 
 interface CertificatesCarouselProps {
     certificates: Certificate[];
 }
 
 export function CertificatesCarousel({ certificates }: CertificatesCarouselProps) {
-    // Duplicate certificates multiple times for seamless infinite loop
-    const duplicatedCertificates = [...certificates, ...certificates, ...certificates];
-
     return (
-        <section className="container max-w-7xl mx-auto py-20 px-4 overflow-hidden">
+        <section className="container w-full mx-auto py-20 items-center">
             <SectionTitle>Sertifikasi & Penghargaan</SectionTitle>
 
-            <div className="relative w-full mt-8">
-                {/* Gradient overlays for fade effect */}
-                <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
-                <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-white dark:from-gray-950 to-transparent z-10 pointer-events-none" />
-
-                {/* Scrolling container */}
-                <div className="overflow-hidden">
-                    <div className="flex gap-6 animate-infinite-scroll hover:[animation-play-state:paused]">
-                        {duplicatedCertificates.map((cert, index) => (
-                            <div key={`${cert.id}-${index}`} className="flex-shrink-0">
-                                <CertificateBadge certificate={cert} />
+            <div className="mt-12">
+                <Slider
+                    width="250px"
+                    duration={10}
+                    pauseOnHover={true}
+                >
+                    {certificates.map((cert) => (
+                        <Slider.Slide key={cert.id}>
+                            <div className="w-40 h-40 bg-card rounded-lg shadow-md hover:shadow-xl p-4 flex flex-col items-center justify-center gap-3 transition-all duration-300 hover:scale-105">
+                                {cert.image_path ? (
+                                    <img
+                                        src={getImageUrl(cert.image_path)}
+                                        alt={cert.title}
+                                        className="max-h-20 w-full object-contain rounded-md"
+                                    />
+                                ) : (
+                                    <Award className="w-16 h-16 text-[#21b6fc]" />
+                                )}
+                                <p className="text-xs text-center font-medium text-[#00334e] dark:text-white line-clamp-2">
+                                    {cert.title}
+                                </p>
                             </div>
-                        ))}
-                    </div>
-                </div>
+                        </Slider.Slide>
+                    ))}
+                </Slider>
             </div>
         </section>
     );
