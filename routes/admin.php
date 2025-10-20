@@ -10,9 +10,7 @@ use Inertia\Inertia;
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->group(function () {
-        Route::get('dashboard', function () {
-            return Inertia::render('admin/dashboard');
-        })->name('admin.dashboard');
+        Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
 
         Route::prefix('management-content')->group(function () {
             Route::get('about', [AboutController::class, 'index'])->name('admin.management-content.about.index');
@@ -70,6 +68,10 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/settings', [SettingsController::class, 'index'])->name('admin.settings.index');
         Route::post('/settings', [SettingsController::class, 'update'])->name('admin.settings.update');
         Route::post('/settings/delete-media', [SettingsController::class, 'deleteMedia'])->name('admin.settings.delete-media');
+
+        Route::resource('certificates', \App\Http\Controllers\Admin\CertificateController::class, [
+            'as' => 'admin'
+        ]);
 
         Route::prefix('media')->group(function () {
             Route::get('/', [MediaUploadController::class, 'index'])->name('admin.media.index');
