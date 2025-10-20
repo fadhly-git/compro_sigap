@@ -28,7 +28,7 @@ export function WhatsAppButton({ settings }: WhatsAppButtonProps) {
             className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full shadow-lg transition-all hover:scale-110 md:h-auto md:w-auto md:py-2 px-4"
             title="Chat via WhatsApp"
         >
-            <img src="/icons/whatsapp-ico.svg" alt="WhatsApp" className="h-6 w-6 md:mr-2" />
+            <img src="/assets/whatsapp-ico.svg" alt="WhatsApp" className="h-6 w-6 md:mr-2" />
             <span className="hidden md:inline">Chat WhatsApp</span>
         </Button>
     );
