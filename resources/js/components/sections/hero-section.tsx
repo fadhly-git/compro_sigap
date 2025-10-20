@@ -7,16 +7,23 @@ import { CompanySetting } from "@/types";
 
 interface HeroSectionProps {
     settings: CompanySetting;
+    clientCount: number;
     tagline?: string;
     shortDescription?: string;
 }
 
-export function HeroSection({ settings, tagline, shortDescription }: HeroSectionProps) {
+export function HeroSection({ settings, clientCount, tagline, shortDescription }: HeroSectionProps) {
     const whatsappLink = settings.whatsapp_enabled && settings.whatsapp_number
         ? `https://wa.me/${settings.whatsapp_number.replace(/\D/g, "")}?text=${encodeURIComponent(
               settings.whatsapp_default_message || "Halo, saya tertarik dengan layanan Anda."
           )}`
         : "/contact";
+
+    // Calculate years of experience from founding year
+    const currentYear = new Date().getFullYear();
+    const yearsOfExperience = settings.founding_year
+        ? currentYear - settings.founding_year
+        : 5;
 
     return (
         <section className="relative flex items-center justify-center min-h-[90vh] bg-gradient-to-br from-[#F3FCFF] via-[#E6F7FB] to-[#C1E8F7] py-20 px-4 overflow-hidden">
@@ -76,21 +83,14 @@ export function HeroSection({ settings, tagline, shortDescription }: HeroSection
                 <div className="flex items-center gap-8 pt-8 text-[#126088] animate-fade-in-up" style={{ animationDelay: '500ms' }}>
                     <div className="flex flex-col items-center">
                         <span className="text-3xl font-bold text-[#1e94d2]">
-                            <AnimatedCounter end={50} suffix="+" />
+                            <AnimatedCounter end={clientCount} suffix="+" />
                         </span>
-                        <span className="text-sm">Project Selesai</span>
+                        <span className="text-sm">Jumlah Client</span>
                     </div>
                     <div className="w-px h-12 bg-[#126088]/30" />
                     <div className="flex flex-col items-center">
                         <span className="text-3xl font-bold text-[#1e94d2]">
-                            <AnimatedCounter end={40} suffix="+" />
-                        </span>
-                        <span className="text-sm">Klien Puas</span>
-                    </div>
-                    <div className="w-px h-12 bg-[#126088]/30" />
-                    <div className="flex flex-col items-center">
-                        <span className="text-3xl font-bold text-[#1e94d2]">
-                            <AnimatedCounter end={5} suffix="+" />
+                            <AnimatedCounter end={yearsOfExperience} suffix="+" />
                         </span>
                         <span className="text-sm">Tahun Pengalaman</span>
                     </div>
