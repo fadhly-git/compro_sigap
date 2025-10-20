@@ -26,6 +26,7 @@ class CompanySetting extends Model
         'meta_keywords',
         'tagline',
         'short_description_below_tagline',
+        'founding_year',
     ];
 
     protected $casts = [

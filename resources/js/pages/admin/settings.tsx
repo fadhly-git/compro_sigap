@@ -33,6 +33,7 @@ interface CompanySettings {
     meta_title: string
     meta_description: string
     meta_keywords: string
+    founding_year: number | null
 }
 
 interface Props {
