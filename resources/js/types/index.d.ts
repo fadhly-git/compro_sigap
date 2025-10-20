@@ -70,6 +70,7 @@ export interface CompanySetting {
     tagline: string;
     short_description_below_tagline: string;
     office_hours?: string | null;
+    founding_year?: number | null;
 }
 
 export interface Service {
@@ -141,6 +142,7 @@ export interface AboutUs {
 export interface HomePageProps {
     companySettings: CompanySetting;
     featuredServices: Service[];
+    clientCount: number;
     clientLogos: Client[];
     miniGallery: GalleryItem[];
     aboutSnippet: AboutUs | null;

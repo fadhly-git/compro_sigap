@@ -5,11 +5,21 @@ use App\Http\Controllers\Admin\ManagementContent\AboutController;
 use App\Http\Controllers\Admin\ManagementContent\ServicesController;
 use App\Http\Controllers\Admin\MediaUploadController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->group(function () {
+
+        Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class,'index'])->name('admin');
+
+        Route::get('register', [RegisteredUserController::class, 'create'])
+            ->name('register');
+
+        Route::post('register', [RegisteredUserController::class, 'store'])
+            ->name('register.store');
+
         Route::get('dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
 
         Route::prefix('management-content')->group(function () {

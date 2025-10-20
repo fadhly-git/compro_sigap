@@ -11,6 +11,7 @@ import { HomePageProps } from "@/types";
 export default function Home({
     companySettings,
     featuredServices,
+    clientCount,
     clientLogos,
     miniGallery,
     certificates,
@@ -18,6 +19,7 @@ export default function Home({
     return (
         <MainLayout settings={companySettings} services={featuredServices}>
             <HeroSection
+                clientCount={clientCount}
                 settings={companySettings}
             />
 

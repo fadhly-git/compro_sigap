@@ -44,6 +44,7 @@ interface CompanySettings {
     meta_title: string;
     meta_description: string;
     meta_keywords: string;
+    founding_year: number | null;
 }
 
 interface SettingsFormProps {
@@ -72,6 +73,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
         meta_title: settings.meta_title || '',
         meta_description: settings.meta_description || '',
         meta_keywords: settings.meta_keywords || '',
+        founding_year: settings.founding_year || null,
     });
 
     const handleInputChange = <K extends keyof CompanySettings>(
@@ -125,6 +127,7 @@ export function SettingsForm({ settings }: SettingsFormProps) {
                     meta_title: formData.meta_title,
                     meta_description: formData.meta_description,
                     meta_keywords: formData.meta_keywords,
+                    founding_year: formData.founding_year,
                 },
                 {
                     onSuccess: () => {
@@ -199,6 +202,17 @@ export function SettingsForm({ settings }: SettingsFormProps) {
                             placeholder="https://example.com"
                         />
                     </div>
+
+                    <FormField
+                        label="Tahun Berdiri"
+                        name="founding_year"
+                        value={formData.founding_year !== null && formData.founding_year !== undefined ? String(formData.founding_year) : ''}
+                        onChange={(value) =>
+                            handleInputChange('founding_year', value === '' ? null : Number(value))
+                        }
+                        type="number"
+                        placeholder="e.g., 2020"
+                    />
 
                     <FormField
                         label="Alamat"
