@@ -28,4 +28,14 @@ class AboutUs extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('isActive', true);
+    }
+
+    public function scopeOrdered($query)
+    {
+        return $query->orderBy('sortOrder', 'asc');
+    }
 }

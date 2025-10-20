@@ -192,7 +192,14 @@ export function PortfolioForm({ client, isEdit = false }: PortfolioFormProps) {
                             <FileUpload
                                 label="Logo Perusahaan"
                                 value={typeof data.logo_path === 'string' ? data.logo_path : null}
-                                onChange={(path) => setData('logo_path', path)}
+                                onChange={(path) => {
+                                    // If path is an array, take the first item, otherwise use as is
+                                    if (Array.isArray(path)) {
+                                        setData('logo_path', path.length > 0 ? path[0] : null)
+                                    } else {
+                                        setData('logo_path', path)
+                                    }
+                                }}
                                 accept="image/*"
                                 type="image"
                             />

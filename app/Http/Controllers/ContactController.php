@@ -6,6 +6,7 @@ use App\Mail\NewMessageNotification;
 use App\Mail\Contact\ThankYouMail;
 use App\Models\CompanySetting;
 use App\Models\Message;
+use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
@@ -15,10 +16,21 @@ class ContactController extends Controller
 {
     public function index(): Response
     {
-        $company = CompanySetting::first();
+        // Company Settings
+        $companySettings = CompanySetting::first() ?? new CompanySetting([
+            'company_name' => 'Company Name',
+            'company_description' => 'Company Description'
+        ]);
 
-        return Inertia::render('contact', [
-            'company' => $company,
+        // Featured Services for navigation
+        $featuredServices = Service::active()
+            ->ordered()
+            ->take(4)
+            ->get(['id', 'title', 'slug', 'description', 'image']);
+
+        return Inertia::render('contact/index', [
+            'companySettings' => $companySettings,
+            'featuredServices' => $featuredServices,
         ]);
     }
 
@@ -41,6 +53,7 @@ class ContactController extends Controller
         // Kirim notifikasi ke admin
         Mail::to(config('app.email', 'admin@company.com'))->send(new NewMessageNotification($message));
 
-        return back()->with('success', 'Pesan Anda berhasil dikirim. Terima kasih!');
+        // Untuk Inertia, gunakan redirect()->back() dengan flash message
+        return redirect()->back()->with('success', 'Pesan Anda berhasil dikirim. Terima kasih!');
     }
 }

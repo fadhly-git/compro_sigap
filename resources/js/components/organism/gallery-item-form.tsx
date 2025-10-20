@@ -48,10 +48,6 @@ export function GalleryItemForm({
         onSubmit(formData)
     }
 
-    const handleImageDelete = () => {
-        setFormData(prev => ({ ...prev, image_path: null }))
-    }
-
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             <ItemFormFields
@@ -61,7 +57,7 @@ export function GalleryItemForm({
                 altText={formData.alt_text}
                 isActive={formData.is_active}
                 sortOrder={formData.sort_order}
-                categoryId={category.id} // Pass categoryId
+                categoryId={category.id}
                 onTitleChange={(value) => {
                     setFormData(prev => ({
                         ...prev,
@@ -71,7 +67,6 @@ export function GalleryItemForm({
                 }}
                 onDescriptionChange={(value) => setFormData(prev => ({ ...prev, description: value }))}
                 onImagePathChange={(path) => setFormData(prev => ({ ...prev, image_path: path }))}
-                onImageDelete={handleImageDelete}
                 onAltTextChange={(value) => setFormData(prev => ({ ...prev, alt_text: value }))}
                 onIsActiveChange={(value) => setFormData(prev => ({ ...prev, is_active: value }))}
                 onSortOrderChange={(value) => setFormData(prev => ({ ...prev, sort_order: value }))}

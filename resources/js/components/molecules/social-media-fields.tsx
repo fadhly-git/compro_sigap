@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { SectionTitle } from '@/components/atoms/section-title'
 
 interface SocialMediaData {
+    [key: string]: string  // <-- Tambahkan index signature ini
     facebook: string
     instagram: string
     twitter: string
@@ -37,7 +38,7 @@ export function SocialMediaFields({ socialMedia, onChange }: SocialMediaFieldsPr
             <CardContent className="space-y-4">
                 {platforms.map(platform => (
                     <FormField
-                    inputType="url"
+                        inputType="url"
                         key={platform.key}
                         label={platform.label}
                         name={platform.key}

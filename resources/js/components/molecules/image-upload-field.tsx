@@ -16,8 +16,7 @@ import { MediaPickerModal } from './media-picker-modal';
 interface ImageUploadFieldProps {
     label: string;
     value: string | null;
-    onChange: (path: string) => void;
-    onDelete: () => void;
+    onChange: (path: string | null) => void; // Bisa null untuk clear
     required?: boolean;
     categoryId?: number;
     title?: string;
@@ -29,7 +28,6 @@ export function ImageUploadField({
     label,
     value,
     onChange,
-    onDelete,
     required = false,
     categoryId,
     title = '',
@@ -108,34 +106,12 @@ export function ImageUploadField({
         }
     };
 
-    const handleRemove = async () => {
-        if (!value) return;
-
-        try {
-            const response = await fetch('/admin/media/delete', {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN':
-                        document
-                            .querySelector('meta[name="csrf-token"]')
-                            ?.getAttribute('content') || '',
-                },
-                body: JSON.stringify({ path: value }),
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                setPreview('');
-                onDelete();
-                toast.success('Gambar berhasil dihapus');
-            } else {
-                toast.error('Gagal menghapus gambar');
-            }
-        } catch (error) {
-            console.error('Delete error:', error);
-            toast.error('Terjadi kesalahan saat menghapus gambar');
+    const handleRemove = () => {
+        // Hanya clear preview dan value, tidak ada API request
+        setPreview('');
+        onChange(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
         }
     };
 
@@ -143,7 +119,12 @@ export function ImageUploadField({
         fileInputRef.current?.click();
     };
 
-    const handleMediaSelect = (path: string, url: string) => {
+    const handleMediaSelect = (paths: string | string[]) => {
+        // If multiple selection, pick the first one
+        const path = Array.isArray(paths) ? paths[0] : paths;
+        if (!path) return;
+        // Assume the URL is `/storage/${path}`
+        const url = `/storage/${path}`;
         setPreview(url);
         onChange(path);
         toast.success('Gambar berhasil dipilih dari library');
@@ -167,14 +148,11 @@ export function ImageUploadField({
                             type="button"
                             size="sm"
                             variant="secondary"
-                            onClick={openFileDialog}
+                            onClick={() => setShowMediaPicker(true)}
                             disabled={uploading}
+                            title="Ganti gambar"
                         >
-                            {uploading ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                                <Upload className="h-4 w-4" />
-                            )}
+                            <Upload className="h-4 w-4" />
                         </Button>
                         <Button
                             type="button"
@@ -182,6 +160,7 @@ export function ImageUploadField({
                             size="sm"
                             onClick={handleRemove}
                             disabled={uploading}
+                            title="Hapus gambar"
                         >
                             <X className="h-4 w-4" />
                         </Button>

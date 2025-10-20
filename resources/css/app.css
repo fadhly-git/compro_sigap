@@ -222,6 +222,10 @@
   background: oklch(0.92 0.04 220);
   border-radius: 5px;
   transition: background 0.3s ease;
+  -webkit-transition: background 0.3s ease;
+  -moz-transition: background 0.3s ease;
+  -ms-transition: background 0.3s ease;
+  -o-transition: background 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -246,6 +250,51 @@ body {
 /* Smooth scroll behavior */
 html {
   scroll-behavior: smooth;
+}
+
+@layer utilities {
+    .animate-fade-in {
+        animation: fadeIn 0.6s ease-in;
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .animate-fade-in-down {
+        animation: fadeInDown 0.8s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 }
 
 /* Animation keyframes for Hero Section */
@@ -342,8 +391,27 @@ html {
   animation-delay: 0.2s;
 }
 
+/* Infinite scroll animation for carousel */
+@keyframes infinite-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+.animate-infinite-scroll {
+  animation: infinite-scroll 40s linear infinite;
+}
+
+/* Faster animation for fewer items */
+.animate-infinite-scroll-fast {
+  animation: infinite-scroll 25s linear infinite;
+}
+
 .prose {
-  @apply text-foreground leading-relaxed max-w-none text-justify; /* Hapus text-pink-400, ganti dengan text-foreground */
+  @apply text-foreground leading-relaxed max-w-7xl w-full text-justify;
   color: inherit; /* Pastikan warna mengikuti theme */
 }
 
@@ -460,3 +528,4 @@ html {
 .prose pre code {
   @apply bg-transparent p-0;
 }
+
