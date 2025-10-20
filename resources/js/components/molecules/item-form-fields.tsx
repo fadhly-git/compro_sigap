@@ -14,11 +14,10 @@ interface ItemFormFieldsProps {
     altText: string
     isActive: boolean
     sortOrder: number
-    categoryId?: number // Tambahan
+    categoryId?: number
     onTitleChange: (value: string) => void
     onDescriptionChange: (value: string) => void
-    onImagePathChange: (path: string) => void
-    onImageDelete: () => void
+    onImagePathChange: (path: string | null) => void // Bisa null
     onAltTextChange: (value: string) => void
     onIsActiveChange: (value: boolean) => void
     onSortOrderChange: (value: number) => void
@@ -31,11 +30,10 @@ export function ItemFormFields({
     altText,
     isActive,
     sortOrder,
-    categoryId, // Tambahan
+    categoryId,
     onTitleChange,
     onDescriptionChange,
     onImagePathChange,
-    onImageDelete,
     onAltTextChange,
     onIsActiveChange,
     onSortOrderChange,
@@ -52,10 +50,9 @@ export function ItemFormFields({
                         label="Upload Gambar"
                         value={imagePath}
                         onChange={onImagePathChange}
-                        onDelete={onImageDelete}
                         required
-                        categoryId={categoryId} // Pass categoryId
-                        title={title} // Pass title untuk naming
+                        categoryId={categoryId}
+                        title={title}
                         context="gallery"
                     />
                 </CardContent>

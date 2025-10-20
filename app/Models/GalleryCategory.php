@@ -53,4 +53,9 @@ class GalleryCategory extends Model
             }
         });
     }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(GalleryItem::class, 'gallery_category_id')->orderBy('sort_order');
+    }
 }

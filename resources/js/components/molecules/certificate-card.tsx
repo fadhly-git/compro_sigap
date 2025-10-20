@@ -67,9 +67,7 @@ export function CertificateCard({
             <CardContent className="flex-1 flex flex-col">
                 <div className="flex-1 space-y-3">
                     {certificate.description && (
-                        <p className="text-sm text-muted-foreground line-clamp-3">
-                            <div dangerouslySetInnerHTML={{ __html: certificate.description }} />
-                        </p>
+                        <div dangerouslySetInnerHTML={{ __html: certificate.description }}  className='text-sm text-muted-foreground line-clamp-3 prose'/>
                     )}
 
                     <div className="space-y-2">

@@ -5,7 +5,6 @@ import { router } from '@inertiajs/react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { FormField } from '@/components/molecules/form-field'
-import { ImageUploadField } from '@/components/molecules/image-upload-field'
 import { SocialMediaFields } from '@/components/molecules/social-media-fields'
 import { WhatsAppFields } from '@/components/molecules/whatsapp-fields'
 import { SEOFields } from '@/components/molecules/seo-fields'
@@ -13,6 +12,7 @@ import { SectionTitle } from '@/components/atoms/section-title'
 import { Loader2, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import settingsRoute from '@/routes/admin/settings'
+import { FileUpload } from '../atoms/file-upload'
 
 interface SocialMediaData {
     facebook: string
@@ -30,6 +30,8 @@ interface CompanySettings {
     company_email: string
     company_website: string
     company_description: string
+    tagline: string
+    short_description_below_tagline: string
     logo_path: string | null
     favicon_path: string | null
     social_media: SocialMediaData
@@ -55,6 +57,8 @@ export function SettingsForm({ settings }: SettingsFormProps) {
         company_email: settings.company_email || '',
         company_website: settings.company_website || '',
         company_description: settings.company_description || '',
+        tagline: settings.tagline || '',
+        short_description_below_tagline: settings.short_description_below_tagline || '',
         logo_path: settings.logo_path || null,
         favicon_path: settings.favicon_path || null,
         social_media: settings.social_media || {
@@ -109,6 +113,8 @@ export function SettingsForm({ settings }: SettingsFormProps) {
                 company_email: formData.company_email,
                 company_website: formData.company_website,
                 company_description: formData.company_description,
+                tagline: formData.tagline,
+                short_description_below_tagline: formData.short_description_below_tagline,
                 logo_path: formData.logo_path,
                 favicon_path: formData.favicon_path,
                 social_media: JSON.stringify(formData.social_media), // Convert to JSON string
@@ -135,32 +141,6 @@ export function SettingsForm({ settings }: SettingsFormProps) {
             console.error('Submit error:', error)
             toast.error('Terjadi kesalahan saat menyimpan')
             setIsSubmitting(false)
-        }
-    }
-
-    const handleDeleteMedia = async (field: 'logo_path' | 'favicon_path') => {
-        try {
-            const response = await fetch(settingsRoute.deleteMedia.url(), {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
-                },
-                body: JSON.stringify({
-                    path: formData[field],
-                    field: field,
-                }),
-            })
-
-            const result = await response.json()
-
-            if (result.success) {
-                setFormData(prev => ({ ...prev, [field]: null }))
-                toast.success('Media berhasil dihapus')
-            }
-        } catch (error) {
-            console.error('Delete error:', error)
-            toast.error('Gagal menghapus media')
         }
     }
 
@@ -225,6 +205,23 @@ export function SettingsForm({ settings }: SettingsFormProps) {
                         onChange={(value) => handleInputChange('company_description', value)}
                         type="textarea"
                     />
+
+                    <FormField
+                        label="Tagline"
+                        name="tagline"
+                        value={formData.tagline}
+                        onChange={(value) => handleInputChange('tagline', value)}
+                        placeholder="Tagline untuk hero section"
+                    />
+
+                    <FormField
+                        label="Deskripsi Singkat (di bawah tagline)"
+                        name="short_description_below_tagline"
+                        value={formData.short_description_below_tagline}
+                        onChange={(value) => handleInputChange('short_description_below_tagline', value)}
+                        type="textarea"
+                        placeholder="Deskripsi singkat yang akan ditampilkan di bawah tagline"
+                    />
                 </CardContent>
             </Card>
 
@@ -238,19 +235,21 @@ export function SettingsForm({ settings }: SettingsFormProps) {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <ImageUploadField
+                        <FileUpload
                             label="Logo Perusahaan"
+                            accept="image/*"
                             value={formData.logo_path}
-                            onChange={(path) => handleInputChange('logo_path', path)}
-                            onDelete={() => handleDeleteMedia('logo_path')}
-                            context="logo"
+                            onChange={(file) => handleInputChange('logo_path', typeof file === 'string' ? file : null)}
+                            type="image"
+                            className=""
                         />
-                        <ImageUploadField
+                        <FileUpload
                             label="Favicon"
+                            accept="image/x-icon,image/png"
                             value={formData.favicon_path}
-                            onChange={(path) => handleInputChange('favicon_path', path)}
-                            onDelete={() => handleDeleteMedia('favicon_path')}
-                            context="favicon"
+                            onChange={(file) => handleInputChange('favicon_path', typeof file === 'string' ? file : null)}
+                            type="image"
+                            className=""
                         />
                     </div>
                 </CardContent>

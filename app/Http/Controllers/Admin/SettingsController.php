@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CompanySetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -12,8 +13,9 @@ class SettingsController extends Controller
 {
     public function index()
     {
+        Log::info("controller start");
         $settings = CompanySetting::getSettings();
-
+        Log::info("setting data" . json_encode($settings));
         return Inertia::render('admin/settings', [
             'settings' => $settings
         ]);

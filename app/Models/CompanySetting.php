@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class CompanySetting extends Model
 {
@@ -23,6 +24,8 @@ class CompanySetting extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
+        'tagline',
+        'short_description_below_tagline',
     ];
 
     protected $casts = [
@@ -32,32 +35,34 @@ class CompanySetting extends Model
 
     public static function getSettings()
     {
-        $settings = self::all()->pluck('value', 'key');
-
-        return [
-            'company_name' => $settings['company_name'] ?? '',
-            'company_address' => $settings['company_address'] ?? '',
-            'company_phone' => $settings['company_phone'] ?? '',
-            'company_email' => $settings['company_email'] ?? '',
-            'company_website' => $settings['company_website'] ?? '',
-            'company_description' => $settings['company_description'] ?? '',
-            'logo_path' => $settings['logo_path'] ?? null,
-            'favicon_path' => $settings['favicon_path'] ?? null,
-            'social_media' => $settings['social_media'] ?? [
-                'facebook' => '',
-                'instagram' => '',
-                'twitter' => '',
-                'linkedin' => '',
-                'youtube' => ''
-            ],
-            'google_maps_embed' => $settings['google_maps_embed'] ?? '',
-            'whatsapp_number' => $settings['whatsapp_number'] ?? '',
-            'whatsapp_default_message' => $settings['whatsapp_default_message'] ?? '',
-            'whatsapp_enabled' => (bool)($settings['whatsapp_enabled'] ?? false),
-            'meta_title' => $settings['meta_title'] ?? '',
-            'meta_description' => $settings['meta_description'] ?? '',
-            'meta_keywords' => $settings['meta_keywords'] ?? '',
-        ];
+        $settings = self::first();
+        if (!$settings) {
+            return [
+                'company_name' => '',
+                'company_address' => '',
+                'company_phone' => '',
+                'company_email' => '',
+                'company_website' => '',
+                'company_description' => '',
+                'logo_path' => null,
+                'favicon_path' => null,
+                'social_media' => [
+                    'facebook' => '',
+                    'instagram' => '',
+                    'twitter' => '',
+                    'linkedin' => '',
+                    'youtube' => ''
+                ],
+                'google_maps_embed' => '',
+                'whatsapp_number' => '',
+                'whatsapp_default_message' => '',
+                'whatsapp_enabled' => false,
+                'meta_title' => '',
+                'meta_description' => '',
+                'meta_keywords' => '',
+            ];
+        }
+        return $settings->toArray();
     }
 
     public static function updateSettings(array $data)
