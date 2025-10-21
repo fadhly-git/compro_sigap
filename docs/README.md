@@ -22,6 +22,7 @@ Selamat datang di dokumentasi lengkap proyek Company Profile PT. Sinergy Garda P
 - **[CONTACT_PAGE.md](CONTACT_PAGE.md)** - Halaman contact dengan email system
 - **[ABOUT_PAGE.md](ABOUT_PAGE.md)** - Halaman about us
 - **[MEDIA_PICKER_GUIDE.md](MEDIA_PICKER_GUIDE.md)** - Media library system
+- **[ERROR_PAGES.md](ERROR_PAGES.md)** - Custom error pages (401, 403, 404, 419, 500, 503)
 
 ### 4. Dokumentasi Development
 - **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Panduan instalasi dan setup
