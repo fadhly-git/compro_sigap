@@ -82,7 +82,7 @@ const footerNavItems: NavItem[] = [
     },
     {
         title: 'Feedback',
-        href: 'https://github.com/laravel/react-starter-kit',
+        href: 'https://github.com/fadhly-git/compro_sigap.git',
         icon: MessageSquare,
     },
 ];

@@ -1,2 +1,8 @@
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /admin
+Disallow: /storage/private
+
+Crawl-delay: 1
+
+Sitemap:
