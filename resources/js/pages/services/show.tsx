@@ -1,6 +1,5 @@
 // resources/js/pages/services/show.tsx
 
-import { Head } from "@inertiajs/react";
 import { MainLayout } from "@/layouts/main-layout";
 import { ServiceDetailSection } from "@/components/sections/service-detail-section";
 import { CompanySetting, Service } from "@/types";
@@ -17,19 +16,7 @@ export default function ServiceShow({
     featuredServices
 }: ServiceShowPageProps) {
     return (
-        <MainLayout settings={companySettings} services={featuredServices}>
-            <Head>
-                <title>
-                    {service.metaTitle || `${service.title} | ${companySettings.company_name}`}
-                </title>
-                <meta
-                    name="description"
-                    content={service.metaDescription || service.description}
-                />
-                {service.metaKeywords && (
-                    <meta name="keywords" content={service.metaKeywords} />
-                )}
-            </Head>
+        <MainLayout settings={companySettings} services={featuredServices} title={service.metaTitle || `${service.title} | ${companySettings.company_name}`} description={service.metaDescription || service.description}>
 
             <ServiceDetailSection service={service} />
         </MainLayout>
