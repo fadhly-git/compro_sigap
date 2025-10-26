@@ -11,6 +11,12 @@ import {
     MessageSquare,
     Award
 } from "lucide-react"
+import { index as aboutRoute } from "@/routes/admin/management-content/about"
+import { index as serviceRoute } from "@/routes/admin/management-content/services"
+import { index as clientRoute } from "@/routes/admin/management-content/portfolio"
+import { index as galleryRoute } from "@/routes/admin/management-content/gallery"
+import { index as messageRoute } from "@/routes/admin/message"
+import { index as certificateRoute } from "@/routes/admin/certificates"
 
 interface DashboardStatsGridProps {
     stats: DashboardStats
@@ -24,6 +30,7 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
                 value={stats.pages.about}
                 description="Total halaman tentang kami"
                 icon={<FileText />}
+                href={aboutRoute().url}
             />
 
             <StatCard
@@ -31,6 +38,7 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
                 value={stats.pages.services}
                 description="Layanan yang dipublikasikan"
                 icon={<Briefcase />}
+                href={serviceRoute().url}
             />
 
             <StatCard
@@ -38,6 +46,7 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
                 value={stats.pages.clients}
                 description="Klien yang terdaftar"
                 icon={<Users />}
+                href={clientRoute().url}
             />
 
             <StatCard
@@ -45,6 +54,7 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
                 value={stats.gallery.categories}
                 description="Kategori galeri aktif"
                 icon={<FolderOpen />}
+                href={galleryRoute().url}
             />
 
             <StatCard
@@ -52,6 +62,7 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
                 value={stats.gallery.items}
                 description="Total item galeri"
                 icon={<Image />}
+                href={galleryRoute().url}
             />
 
             <StatCard
@@ -59,7 +70,7 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
                 value={stats.messages.total}
                 description={`${stats.messages.unread} belum dibaca`}
                 icon={<MessageSquare />}
-                className={stats.messages.unread > 0 ? "border-blue-200 bg-blue-50" : ""}
+                href={messageRoute.url()}
             />
 
             <StatCard
@@ -67,6 +78,7 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
                 value={stats.messages.today}
                 description="Pesan masuk hari ini"
                 icon={<MessageSquare />}
+                href={messageRoute.url()}
             />
 
             <StatCard
@@ -74,6 +86,7 @@ export function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
                 value={stats.certificates.active}
                 description={`dari ${stats.certificates.total} total`}
                 icon={<Award />}
+                href={certificateRoute.url()}
             />
         </div>
     )

@@ -9,10 +9,8 @@ import { Button } from "@/components/ui/button"
 import { DashboardProps } from "@/types/dashboard"
 import { BreadcrumbItem } from "@/types"
 import {
-    BarChart3,
     TrendingUp,
     Calendar,
-    Image,
     Briefcase,
     Images,
     Cog,
@@ -33,7 +31,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ]
 
-export default function Dashboard({ stats, recentMessages, quickStats }: DashboardProps) {
+export default function Dashboard({ stats, recentMessages }: DashboardProps) {
     const quickActions = [
         {
             title: "Kelola Tentang Kami",
@@ -130,63 +128,6 @@ export default function Dashboard({ stats, recentMessages, quickStats }: Dashboa
                         messages={recentMessages}
                         unreadCount={stats.messages.unread}
                     />
-                </div>
-
-                {/* Summary Cards */}
-                <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-                    <Card>
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-2xl font-bold">{quickStats.totalPages}</p>
-                                    <p className="text-sm text-muted-foreground">Total Halaman</p>
-                                </div>
-                                <BarChart3 className="h-8 w-8 text-muted-foreground" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-2xl font-bold">{quickStats.totalGalleryItems}</p>
-                                    <p className="text-sm text-muted-foreground">Item Galeri</p>
-                                </div>
-                                <Image className="h-8 w-8 text-muted-foreground" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className={quickStats.unreadMessages > 0 ? "border-orange-200 bg-orange-50" : ""}>
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-2xl font-bold">{quickStats.unreadMessages}</p>
-                                    <p className="text-sm text-muted-foreground">Pesan Belum Dibaca</p>
-                                </div>
-                                <div className={quickStats.unreadMessages > 0 ? "text-orange-600" : "text-muted-foreground"}>
-                                    <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardContent className="p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-2xl font-bold">{quickStats.activeCertificates}</p>
-                                    <p className="text-sm text-muted-foreground">Sertifikat Aktif</p>
-                                </div>
-                                <svg className="h-8 w-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                </svg>
-                            </div>
-                        </CardContent>
-                    </Card>
                 </div>
             </div>
         </AppLayout>

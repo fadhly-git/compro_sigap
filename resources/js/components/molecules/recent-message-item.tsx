@@ -17,13 +17,13 @@ export function RecentMessageItem({ message, onClick }: RecentMessageItemProps) 
         <div
             className={cn(
                 "flex items-center space-x-4 p-4 rounded-lg cursor-pointer transition-colors hover:bg-muted/50",
-                !message.isRead && "bg-blue-50 border-l-4 border-l-blue-500"
+                !message.isRead && "bg-blue-900/70 border-l-4 border-l-blue-500"
             )}
             onClick={onClick}
         >
             <div className={cn(
                 "flex h-10 w-10 items-center justify-center rounded-full",
-                message.isRead ? "bg-muted" : "bg-blue-100"
+                message.isRead ? "bg-muted" : "bg-blue-700/10"
             )}>
                 {message.isRead ? (
                     <MailOpen className="h-4 w-4 text-muted-foreground" />
